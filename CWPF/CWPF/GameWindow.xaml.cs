@@ -22,7 +22,7 @@ namespace CWPF
     public partial class GameWindow : Window
     {
         private Ellipse jumpingJona;
-        private double x = 0.0, y = 0.0;
+        private double x = 100, y = 100;
         public GameWindow()
         {
             InitializeComponent();
@@ -54,12 +54,12 @@ namespace CWPF
         {
             if (Keyboard.IsKeyDown(Key.Left))
             {
-                x -= 0.1;
+                x -= 0.05;
                 Canvas.SetLeft(jumpingJona, x);
             }
             if (Keyboard.IsKeyDown(Key.Right))
             {
-                x += 0.1;
+                x += 0.05;
                 Canvas.SetLeft(jumpingJona, x);
 
             }
