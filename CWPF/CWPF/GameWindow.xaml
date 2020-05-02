@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:CWPF"
         mc:Ignorable="d"
         Title="GameWindow" Height="600" Width="800">
-    <Grid Name="jonaGrid">
+    <Canvas x:Name="jonaCanvas">
 
-    </Grid>
+    </Canvas>
 </Window>

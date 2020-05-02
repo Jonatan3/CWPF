@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace CWPF
 {
@@ -21,10 +22,14 @@ namespace CWPF
     public partial class GameWindow : Window
     {
         private Ellipse jumpingJona;
+        private double x = 0.0, y = 0.0;
         public GameWindow()
         {
             InitializeComponent();
             IniJumpingJona();
+            DispatcherTimer timer = new DispatcherTimer();
+            timer.Tick += new EventHandler(MoveJumpingJona);
+            timer.Start();
             //Thread thread = new Thread(new ThreadStart(MoveJumpingJona));
             //thread.Start();
         }
@@ -39,21 +44,24 @@ namespace CWPF
             jumpingJona.StrokeThickness = 2;
             jumpingJona.Fill = new SolidColorBrush(Colors.Blue);
             jumpingJona.Stroke = new SolidColorBrush(Colors.Black);
-            jumpingJona.Margin = new Thickness(0, 0, 0, 0);
-            jonaGrid.Children.Add(jumpingJona);
+            jonaCanvas.Children.Add(jumpingJona);
+            Canvas.SetLeft(jumpingJona, x);
+            Canvas.SetTop(jumpingJona, y);
+
         }
 
-        private void MoveJumpingJona()
+        private void MoveJumpingJona(object sender, EventArgs e)
         {
-            while (true)
+            if (Keyboard.IsKeyDown(Key.Left))
             {
-                if (Keyboard.IsKeyDown(Key.Right))
-                {
-                    Thickness currPos = jumpingJona.Margin;
-                    Thickness newPos = currPos;
-                    newPos.Right = newPos.Right + 100;
-                    jumpingJona.Margin = newPos;
-                }
+                x -= 0.1;
+                Canvas.SetLeft(jumpingJona, x);
+            }
+            if (Keyboard.IsKeyDown(Key.Right))
+            {
+                x += 0.1;
+                Canvas.SetLeft(jumpingJona, x);
+
             }
         }
     }
