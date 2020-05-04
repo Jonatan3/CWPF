@@ -16,7 +16,7 @@ namespace CWPF
     public partial class GameWindow : Window
     {
         private Ellipse jumpingJona;
-        private double x = 350.0, y = 300.0, dy = 0.0;
+        private double x = 25, y = 600.0, dy = 0.0;
         private double gravity = 0.1;
         private double friction = 0.99;
         private int time = 0;
@@ -46,6 +46,7 @@ namespace CWPF
     
         private void IniJumpingJona()
         {
+            
             jumpingJona = new Ellipse();
             jumpingJona.Name = "jumpingJona";
             jumpingJona.Height = 50;
@@ -64,25 +65,20 @@ namespace CWPF
         {
             if (Keyboard.IsKeyDown(Key.Left) || Keyboard.IsKeyDown(Key.A))
             {
-                x -= 0.05;
+                x -= 0.5;
                 Canvas.SetLeft(jumpingJona, x);
             }
             if (Keyboard.IsKeyDown(Key.Right) || Keyboard.IsKeyDown(Key.D))
             {
-                x += 0.05;
+                x += 0.5;
                 Canvas.SetLeft(jumpingJona, x);
             }
-            if (Keyboard.IsKeyDown(Key.Up) || Keyboard.IsKeyDown(Key.W))
+            if (Keyboard.IsKeyDown(Key.Up) || Keyboard.IsKeyDown(Key.W) || Keyboard.IsKeyDown(Key.Space))
             {
                 dy = -3;
                 y += dy;
 
 
-                Canvas.SetTop(jumpingJona, y);
-            }
-            if (Keyboard.IsKeyDown(Key.Down))
-            {
-                y += 0.1;
                 Canvas.SetTop(jumpingJona, y);
             }
         }
@@ -91,7 +87,7 @@ namespace CWPF
         private void UpdateScreen(object sender, EventArgs e)
         {
 
-            if (y + jumpingJona.Height/2 +dy >= 300)
+            if (y + jumpingJona.Height/2 +dy >= 600)
             {
                 dy = -gravity;
                 dy *= friction;
