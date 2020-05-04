@@ -16,17 +16,28 @@ namespace CWPF
     public partial class GameWindow : Window
     {
         private Ellipse jumpingJona;
-        private double x = 25, y = 600.0, dy = 0.0;
+        private double startX = 25, startY, dy = 0.0, x = 0.0, y = 0.0;
         private double gravity = 0.1;
         private double friction = 0.99;
         private int time = 0;
+
+       
         
        
 
         public GameWindow()
         {
             InitializeComponent();
+            jonaCanvas.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+            jonaCanvas.Arrange(new Rect(0, 0, 1920, 1080));
+            startY = jonaCanvas.ActualHeight * 0.605;
+            Console.WriteLine("hej " + jonaCanvas.ActualHeight);
+
             IniJumpingJona();
+            
+
+            
+
             DispatcherTimer timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromMilliseconds(1);
             timer.Tick += new EventHandler(MoveJumpingJona);
@@ -46,7 +57,6 @@ namespace CWPF
     
         private void IniJumpingJona()
         {
-            
             jumpingJona = new Ellipse();
             jumpingJona.Name = "jumpingJona";
             jumpingJona.Height = 50;
@@ -55,7 +65,8 @@ namespace CWPF
             jumpingJona.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#2185C5"));
             jumpingJona.Stroke = new SolidColorBrush(Colors.Black);
             jonaCanvas.Children.Add(jumpingJona);
-            y -= jumpingJona.Height / 2;
+            x = startX;
+            y = startY - jumpingJona.Height / 2;
             Canvas.SetLeft(jumpingJona, x);
             Canvas.SetTop(jumpingJona, y);
 
@@ -87,7 +98,7 @@ namespace CWPF
         private void UpdateScreen(object sender, EventArgs e)
         {
 
-            if (y + jumpingJona.Height/2 +dy >= 600)
+            if (y + jumpingJona.Height/2 +dy >= startY)
             {
                 dy = -gravity;
                 dy *= friction;
