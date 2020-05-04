@@ -22,17 +22,18 @@ namespace CWPF
     public partial class GameWindow : Window
     {
         private Ellipse jumpingJona;
-        private double x = 350.0, y = 0.0, dy = 0.0;
+        private double x = 350.0, y = 300.0, dy = 0.0;
         private double gravity = 0.1;
         private double friction = 0.99;
         
-
+       
 
         public GameWindow()
         {
             InitializeComponent();
             IniJumpingJona();
             DispatcherTimer timer = new DispatcherTimer();
+            timer.Interval = TimeSpan.FromMilliseconds(1);
             timer.Tick += new EventHandler(MoveJumpingJona);
             timer.Start();
 
@@ -46,8 +47,6 @@ namespace CWPF
             clock.Tick += StartClock;
             clock.Start();
 
-
-            //jonaCanvas.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#7ECEFD"));
 
             //Thread thread = new Thread(new ThreadStart(MoveJumpingJona));
             //thread.Start();
@@ -65,6 +64,7 @@ namespace CWPF
             jumpingJona.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#2185C5"));
             jumpingJona.Stroke = new SolidColorBrush(Colors.Black);
             jonaCanvas.Children.Add(jumpingJona);
+            y -= jumpingJona.Height / 2;
             Canvas.SetLeft(jumpingJona, x);
             Canvas.SetTop(jumpingJona, y);
 
@@ -84,7 +84,10 @@ namespace CWPF
             }
             if (Keyboard.IsKeyDown(Key.Up))
             {
-                y -= 0.1;
+                dy = -3;
+                y += dy;
+
+
                 Canvas.SetTop(jumpingJona, y);
             }
             if (Keyboard.IsKeyDown(Key.Down))
@@ -100,8 +103,9 @@ namespace CWPF
 
             if (y + jumpingJona.Height/2 +dy >= 300)
             {
-                dy = -dy;
+                dy = -gravity;
                 dy *= friction;
+               
             } else
             {
                 dy += gravity;
