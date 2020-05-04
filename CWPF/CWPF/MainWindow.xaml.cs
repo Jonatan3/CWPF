@@ -69,6 +69,7 @@ namespace CWPF
         private void StartButton_Click(object sender, RoutedEventArgs e)
         {
             GameWindow gameWindow = new GameWindow();
+            gameWindow.WindowState = WindowState.Maximized;
             gameWindow.Show();
         }
         private void CollaberatorsButton_Click(object sender, RoutedEventArgs e)

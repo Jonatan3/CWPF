@@ -23,5 +23,6 @@
 				</Grid>
 			</Canvas>
 		</Border>
-	</Grid>
+        <TextBlock HorizontalAlignment="Left" Margin="10,-131,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top"/>
+    </Grid>
 </Window>
