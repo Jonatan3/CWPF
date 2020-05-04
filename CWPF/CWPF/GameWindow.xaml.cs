@@ -74,12 +74,12 @@ namespace CWPF
         {
             if (Keyboard.IsKeyDown(Key.Left))
             {
-                x -= 0.1;
+                x -= 0.05;
                 Canvas.SetLeft(jumpingJona, x);
             }
             if (Keyboard.IsKeyDown(Key.Right))
             {
-                x += 0.1;
+                x += 0.05;
                 Canvas.SetLeft(jumpingJona, x);
             }
             if (Keyboard.IsKeyDown(Key.Up))
