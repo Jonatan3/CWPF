@@ -1,17 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+
 
 namespace CWPF
 {
@@ -26,23 +16,45 @@ namespace CWPF
             IniButtons();
         }
 
-        private void startButton_Click(object sender, RoutedEventArgs e)
+        private void StartButton_Click(object sender, RoutedEventArgs e)
         {
             GameWindow gameWindow = new GameWindow();
             gameWindow.Show();
         }
+        private void CollaberatorsButton_Click(object sender, RoutedEventArgs e)
+        {
+            buttonGrid.Children.Clear();
+            IniCollab();
+        }
 
         private void IniButtons()
         {
+            // Start game button
             Button startButton = new Button();
             startButton.Height = 50;
-            startButton.Width = 80;
+            startButton.Width = 100;
             startButton.Content = "Start Game";
             startButton.Background = new SolidColorBrush(Colors.Black);
             startButton.Foreground = new SolidColorBrush(Colors.White);
-            startButton.Click += new RoutedEventHandler(startButton_Click);
-            startButton.Margin = new Thickness(0, 0, 0, 0);
+            startButton.Click += new RoutedEventHandler(StartButton_Click);
+            startButton.Margin = new Thickness(0, -60, 0, 0);
             buttonGrid.Children.Add(startButton);
+
+            // Collaborators button
+            Button collaboratorsButton = new Button();
+            collaboratorsButton.Height = 50;
+            collaboratorsButton.Width = 100;
+            collaboratorsButton.Content = "Project\nCollaborators";
+            collaboratorsButton.Background = new SolidColorBrush(Colors.Black);
+            collaboratorsButton.Foreground = new SolidColorBrush(Colors.White);
+            collaboratorsButton.Click += new RoutedEventHandler(CollaberatorsButton_Click);
+            collaboratorsButton.Margin = new Thickness(0, 60, 0, 0);
+            buttonGrid.Children.Add(collaboratorsButton);
+        }
+        
+        private void IniCollab()
+        {
+
         }
     }
 }
