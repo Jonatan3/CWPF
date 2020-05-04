@@ -28,10 +28,17 @@ namespace CWPF
         public GameWindow()
         {
             InitializeComponent();
+            
+            double nativeWidth = ((Panel)Application.Current.MainWindow.Content).ActualWidth;
+            double nativeHeight = ((Panel)Application.Current.MainWindow.Content).ActualHeight;
+            Console.WriteLine("hej " + nativeWidth);
             jonaCanvas.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
-            jonaCanvas.Arrange(new Rect(0, 0, 1920, 1080));
-            startY = jonaCanvas.ActualHeight * 0.605;
+            jonaCanvas.Arrange(new Rect(0, 0, nativeWidth, nativeHeight));
+            startY = jonaCanvas.ActualHeight * 0.66; 
             Console.WriteLine("hej " + jonaCanvas.ActualHeight);
+
+
+
 
             IniJumpingJona();
             
