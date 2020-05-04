@@ -47,7 +47,7 @@ namespace CWPF
             clock.Start();
 
 
-            jonaCanvas.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#7ECEFD"));
+            //jonaCanvas.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#7ECEFD"));
 
             //Thread thread = new Thread(new ThreadStart(MoveJumpingJona));
             //thread.Start();
@@ -98,7 +98,7 @@ namespace CWPF
         private void UpdateScreen(object sender, EventArgs e)
         {
 
-            if (y + jumpingJona.Height/2 +dy >= 400)
+            if (y + jumpingJona.Height/2 +dy >= 300)
             {
                 dy = -dy;
                 dy *= friction;
