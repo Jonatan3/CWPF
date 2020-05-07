@@ -15,8 +15,8 @@ namespace CWPF
     /// </summary>
     public partial class GameWindow : Window
     {
-        private Ellipse jumpingJona;
-        private double startX = 25, startY, dy = 0.0, x = 0.0, y = 0.0;
+        private JumpingJona jumpingJona;
+        private double startY;
         private double gravity = 0.1;
         private double friction = 0.99;
         private int time = 0, realScore = 500;
@@ -34,7 +34,7 @@ namespace CWPF
             startY = jonaCanvas.ActualHeight * 0.66; 
             Console.WriteLine("hej " + jonaCanvas.ActualHeight);
 
-            IniJumpingJona();
+            jumpingJona = new JumpingJona(new Ellipse(), jonaCanvas);
 
             DispatcherTimer timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromMilliseconds(1);
@@ -59,22 +59,6 @@ namespace CWPF
             clock.Tick += UpdateScore;
             clock.Start();
         }
-    
-        private void IniJumpingJona()
-        {
-            jumpingJona = new Ellipse();
-            jumpingJona.Name = "jumpingJona";
-            jumpingJona.Height = 50;
-            jumpingJona.Width = 50;
-            jumpingJona.StrokeThickness = 1;
-            jumpingJona.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#2185C5"));
-            jumpingJona.Stroke = new SolidColorBrush(Colors.Black);
-            jonaCanvas.Children.Add(jumpingJona);
-            x = startX;
-            y = startY - jumpingJona.Height / 2;
-            Canvas.SetLeft(jumpingJona, x);
-            Canvas.SetTop(jumpingJona, y);
-        }
 
         private void IniScoreCounter()
         {
@@ -89,21 +73,15 @@ namespace CWPF
         {
             if (Keyboard.IsKeyDown(Key.Left) || Keyboard.IsKeyDown(Key.A))
             {
-                x -= 0.5;
-                Canvas.SetLeft(jumpingJona, x);
+                jumpingJona.MoveLeft();
             }
             if (Keyboard.IsKeyDown(Key.Right) || Keyboard.IsKeyDown(Key.D))
             {
-                x += 0.5;
-                Canvas.SetLeft(jumpingJona, x);
+                jumpingJona.MoveRight();
             }
             if (Keyboard.IsKeyDown(Key.Up) || Keyboard.IsKeyDown(Key.W) || Keyboard.IsKeyDown(Key.Space))
             {
-                dy = -3;
-                y += dy;
-
-
-                Canvas.SetTop(jumpingJona, y);
+                jumpingJona.Jumb();
             }
         }
 
@@ -111,17 +89,17 @@ namespace CWPF
         private void UpdateScreen(object sender, EventArgs e)
         {
 
-            if (y + jumpingJona.Height/2 +dy >= startY)
+            if (jumpingJona.Y + jumpingJona.Body.Height/2 + jumpingJona.Y >= startY)
             {
-                dy = -gravity;
-                dy *= friction;
+                jumpingJona.VertSpeed = -gravity;
+                jumpingJona.VertSpeed *= friction;
                
             } else
             {
-                dy += gravity;
+                jumpingJona.VertSpeed += gravity;
             }
-            y += dy;
-            Canvas.SetTop(jumpingJona, y);
+            jumpingJona.Y += jumpingJona.VertSpeed;
+            Canvas.SetTop(jumpingJona.Body, jumpingJona.Y);
 
         }
 
