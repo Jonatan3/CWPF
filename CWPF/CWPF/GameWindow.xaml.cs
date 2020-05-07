@@ -19,11 +19,8 @@ namespace CWPF
         private double startX = 25, startY, dy = 0.0, x = 0.0, y = 0.0;
         private double gravity = 0.1;
         private double friction = 0.99;
-        private int time = 0;
-
-       
-        
-       
+        private int time = 0, realScore = 500;
+        private TextBlock scoreText;
 
         public GameWindow()
         {
@@ -37,13 +34,7 @@ namespace CWPF
             startY = jonaCanvas.ActualHeight * 0.66; 
             Console.WriteLine("hej " + jonaCanvas.ActualHeight);
 
-
-
-
             IniJumpingJona();
-            
-
-            
 
             DispatcherTimer timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromMilliseconds(1);
@@ -59,6 +50,13 @@ namespace CWPF
             lblTime.Content = TimeSpan.FromSeconds(0);
             clock.Interval = TimeSpan.FromSeconds(1);
             clock.Tick += StartClock;
+            clock.Start();
+
+            IniScoreCounter();
+            DispatcherTimer score = new DispatcherTimer();
+            scoreText.Text = realScore.ToString();
+            clock.Interval = TimeSpan.FromSeconds(1);
+            clock.Tick += UpdateScore;
             clock.Start();
         }
     
@@ -76,7 +74,15 @@ namespace CWPF
             y = startY - jumpingJona.Height / 2;
             Canvas.SetLeft(jumpingJona, x);
             Canvas.SetTop(jumpingJona, y);
+        }
 
+        private void IniScoreCounter()
+        {
+            scoreText = new TextBlock();
+            scoreText.FontSize = 20;
+            scoreText.HorizontalAlignment = HorizontalAlignment.Left;
+            scoreText.VerticalAlignment = VerticalAlignment.Top;
+            jonaCanvas.Children.Add(scoreText);
         }
 
         private void MoveJumpingJona(object sender, EventArgs e)
@@ -125,5 +131,10 @@ namespace CWPF
             lblTime.Content = TimeSpan.FromSeconds(time);
         }
 
+        private void UpdateScore(object sender, EventArgs e)
+        {
+            realScore -= 5;
+            scoreText.Text = realScore.ToString();
+        }
     }
 }
