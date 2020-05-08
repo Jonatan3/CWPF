@@ -92,7 +92,7 @@ namespace CWPF
             }
             if (Keyboard.IsKeyDown(Key.Up) || Keyboard.IsKeyDown(Key.W) || Keyboard.IsKeyDown(Key.Space))
             {
-                jumpingJona.Jumb();
+                jumpingJona.Jump();
             }
         }
 
