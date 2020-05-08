@@ -10,32 +10,32 @@ using System.Windows.Threading;
 
 namespace CWPF
 {
-    public class JumpingJona : IJumpingJona
+    public abstract class JumpingJona : IJumpingJona
     {
-        private Ellipse body;
-        private double vertSpeed, x = 25, y = 0.0, startYY=0.0;
-        private Canvas jonaCanvas;
-       public double startY
-        {
-            get { return startYY; }
-            set { startYY = value; }
-        }
+        protected Ellipse body;
+        protected double vertSpeed, x = 25, y = 0.0, startY = 0.0;
+        protected Canvas jonaCanvas;
+
+
+        #region Constructures
         public JumpingJona(Ellipse body, Canvas jonaCanvas, double startY) {
             this.body = body;
             this.jonaCanvas = jonaCanvas;
             this.startY = startY;
             IniBody();
         }
-        public JumpingJona(Ellipse body, Canvas jonaCanvas, double x, double y, double vertSpeed)
-        {
-            this.body = body;
-            this.jonaCanvas = jonaCanvas;
-            this.x = x;
-            this.y = y;
-            this.vertSpeed = vertSpeed;
-        }
+    #endregion
 
-        private void IniBody()
+            #region Properties
+        public virtual double StartY { get; set; }
+        public virtual Ellipse Body { get; set; }
+        public virtual double X { get; set; }
+        public virtual double Y { get; set; }
+        public virtual double VertSpeed { get; set; }
+        #endregion
+
+        #region Private methods
+        protected void IniBody()
         {
             body.Name = "jumpingJona";
             body.Height = 50;
@@ -48,46 +48,20 @@ namespace CWPF
             Canvas.SetLeft(body, x);
             Canvas.SetTop(body, y);
         }
+        #endregion
 
-        public void Jump()
+        #region Public Methods
+        public virtual void Jump()
         {
-            vertSpeed = -3;
-            y += vertSpeed;
-            Canvas.SetTop(body, y);
-        }
-
-        public void MoveRight()
-        {
-            x += 1;
-            Canvas.SetLeft(body, x);
         }
 
-        public void MoveLeft()
+        public virtual void MoveRight()
         {
-            x -= 1;
-            Canvas.SetLeft(body, x);
         }
 
-        public Ellipse Body
+        public virtual void MoveLeft()
         {
-            get { return body; }
-            set { body = value; }
         }
-        public double X
-        {
-            get { return x; }
-            set { y = value; }
-        }
-        public double Y
-        {
-            get { return y; }
-            set { y = value; }
-        }
-
-         public double VertSpeed
-        {
-            get { return vertSpeed; }
-            set { vertSpeed = value; }
-        }
+        #endregion
     }
 }

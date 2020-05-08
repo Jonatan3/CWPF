@@ -76,6 +76,8 @@
     </Compile>
     <Compile Include="IJumpingJona.cs" />
     <Compile Include="JumpingJona.cs" />
+    <Compile Include="JumpingJonaFastState.cs" />
+    <Compile Include="JumpingJonaSlowState.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
