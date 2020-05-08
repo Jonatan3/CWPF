@@ -10,9 +10,9 @@
 	<Grid x:Name="test">
 		<Border Margin="10,10,10,10" BorderBrush="Blue" BorderThickness="1,1,1,1" CornerRadius="5,5,5,5">
 			<Border.Background>
-				<LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-					<GradientStop Color="#48d4ff  " Offset="0.7"/>
-					<GradientStop Color="#6ea147 " Offset="0.7"/>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop Color="#7ccef3 " Offset="0"/>
+                    <GradientStop Color="#48d4ff  " Offset="0.5"/>
 				</LinearGradientBrush>
 			</Border.Background>
 
@@ -26,3 +26,4 @@
         <TextBlock HorizontalAlignment="Left" Margin="10,-131,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top"/>
     </Grid>
 </Window>
+

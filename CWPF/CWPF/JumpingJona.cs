@@ -13,13 +13,19 @@ namespace CWPF
     public abstract class JumpingJona : IJumpingJona
     {
         protected Ellipse body;
-        protected double vertSpeed, x = 25, y = 0.0;
+        protected double vertSpeed, x = 25, y = 0.0, startY = 0.0;
         protected Canvas jonaCanvas;
 
+        public double startY
+        {
+            get { return startYY; }
+            set { startYY = value; }
+        }
         #region Constructures
         public JumpingJona(Ellipse body, Canvas jonaCanvas) {
             this.body = body;
             this.jonaCanvas = jonaCanvas;
+            this.startY = startY;
             IniBody();
         }
         #endregion
@@ -41,7 +47,7 @@ namespace CWPF
             body.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#2185C5"));
             body.Stroke = new SolidColorBrush(Colors.Black);
             jonaCanvas.Children.Add(body);
-            y = y - body.Height / 2;
+            y = startY - body.Height/2;
             Canvas.SetLeft(body, x);
             Canvas.SetTop(body, y);
         }
