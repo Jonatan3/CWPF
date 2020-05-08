@@ -34,47 +34,15 @@ namespace CWPF
             jonaCanvas.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
             jonaCanvas.Arrange(new Rect(0, 0, nativeWidth, nativeHeight));
             startY = jonaCanvas.ActualHeight * (2.0 / 3.0);
-            jumpingJona = new JumpingJonaFastState(new Ellipse(), jonaCanvas, startY);
+            jumpingJona = new JumpingJonaSlowState(new Ellipse(), jonaCanvas, startY);
 
             Rectangle grass = new Rectangle();
             grass.Height = jonaCanvas.ActualHeight * (1.0/3.0)-jumpingJona.Body.Height/2 -margins;
             grass.Width = jonaCanvas.ActualWidth-margins;
-
-
             grass.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#6ea147"));
-            startY = jonaCanvas.ActualHeight * 0.66;
-       
-
-
             jonaCanvas.Children.Add(grass);
             Canvas.SetTop(grass, jonaCanvas.ActualHeight - grass.Height -margins);
-
-            
-
-            DispatcherTimer timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromMilliseconds(1);
-            timer.Tick += new EventHandler(MoveJumpingJona);
-            timer.Start();
-
-            DispatcherTimer update = new DispatcherTimer();
-            update.Interval = TimeSpan.FromMilliseconds(1);
-            update.Tick += UpdateScreen;
-            update.Start();
-
-            DispatcherTimer clock = new DispatcherTimer();
-            lblTime.Content = TimeSpan.FromSeconds(0);
-            clock.Interval = TimeSpan.FromSeconds(1);
-            clock.Tick += StartClock;
-            clock.Start();
-
-            IniScoreCounter();
-            DispatcherTimer score = new DispatcherTimer();
-            scoreText.Text = realScore.ToString();
-            clock.Interval = TimeSpan.FromSeconds(1);
-            clock.Tick += UpdateScore;
-            clock.Start();
             StartTimers();
-
         }
         #endregion
 
