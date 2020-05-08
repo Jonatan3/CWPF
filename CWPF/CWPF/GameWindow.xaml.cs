@@ -34,7 +34,7 @@ namespace CWPF
             jonaCanvas.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
             jonaCanvas.Arrange(new Rect(0, 0, nativeWidth, nativeHeight));
             startY = jonaCanvas.ActualHeight * (2.0 / 3.0);
-            jumpingJona = new JumpingJonaFastState(new Ellipse(), jonaCanvas, startY);
+            jumpingJona = new JumpingJonaSlowState(new Ellipse(), jonaCanvas, startY);
 
             Rectangle grass = new Rectangle();
             grass.Height = jonaCanvas.ActualHeight * (1.0/3.0)-jumpingJona.Body.Height/2 -margins;
@@ -70,17 +70,25 @@ namespace CWPF
         private void UpdateScreen(object sender, EventArgs e)
         {
 
-            if (jumpingJona.Y + jumpingJona.Body.Height/2 + jumpingJona.VertSpeed >= startY)
+            if (jumpingJona.Y + jumpingJona.Body.Height / 2 + jumpingJona.VertSpeed >= startY)
             {
                 jumpingJona.VertSpeed = -gravity;
                 jumpingJona.VertSpeed *= friction;
-               
+            } else if(jumpingJona.Y + jumpingJona.Body.Height/2 + jumpingJona.VertSpeed <= margins){
+                jumpingJona.Y += 4;
+                jumpingJona.VertSpeed += gravity; 
+
             } else
             {
                 jumpingJona.VertSpeed += gravity;
             }
             jumpingJona.Y += jumpingJona.VertSpeed;
             Canvas.SetTop(jumpingJona.Body, jumpingJona.Y);
+
+            if (jumpingJona.X + jumpingJona.Body.Width/2.0 + jumpingJona.VertSpeed <= margins)
+            {
+                jumpingJona.MoveRight();
+            }
         }
         #endregion
 
