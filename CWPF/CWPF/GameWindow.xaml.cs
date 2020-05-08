@@ -19,6 +19,7 @@ namespace CWPF
         
         private double gravity = 0.1;
         private double friction = 0.99;
+        private int margins = 22;
         private int time = 0, realScore = 500;
         private TextBlock scoreText;
         private double startY;
@@ -37,13 +38,13 @@ namespace CWPF
             jumpingJona = new JumpingJona(new Ellipse(), jonaCanvas, startY);
 
             Rectangle grass = new Rectangle();
-            grass.Height = jonaCanvas.ActualHeight * (1.0/3.0)-jumpingJona.Body.Height/2;
-            grass.Width = jonaCanvas.ActualWidth;
+            grass.Height = jonaCanvas.ActualHeight * (1.0/3.0)-jumpingJona.Body.Height/2 -margins;
+            grass.Width = jonaCanvas.ActualWidth-margins;
             grass.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#6ea147"));
 
 
             jonaCanvas.Children.Add(grass);
-            Canvas.SetTop(grass, jonaCanvas.ActualHeight - grass.Height);
+            Canvas.SetTop(grass, jonaCanvas.ActualHeight - grass.Height -margins);
 
             
 
