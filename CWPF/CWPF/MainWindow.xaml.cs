@@ -10,12 +10,15 @@ namespace CWPF
     /// </summary>
     public partial class MainWindow : Window
     {
+        #region Constructures
         public MainWindow()
         {
             InitializeComponent();
             IniMainMenu();
         }
+        #endregion
 
+        #region Initialiser
         private void IniMainMenu()
         {
             // Start game button
@@ -65,7 +68,9 @@ namespace CWPF
             backButton.Click += new RoutedEventHandler(BackButton_Click);
             buttonGrid.Children.Add(backButton);
         }
+        #endregion
 
+        #region Clickers
         private void StartButton_Click(object sender, RoutedEventArgs e)
         {
             GameWindow gameWindow = new GameWindow();
@@ -81,5 +86,6 @@ namespace CWPF
             buttonGrid.Children.Clear();
             IniMainMenu();
         }
+        #endregion
     }
 }

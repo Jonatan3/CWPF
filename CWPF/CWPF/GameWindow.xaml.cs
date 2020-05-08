@@ -22,44 +22,25 @@ namespace CWPF
         private int time = 0, realScore = 500;
         private TextBlock scoreText;
 
+        #region Constructures
         public GameWindow()
         {
             InitializeComponent();
-            
+
             double nativeWidth = ((Panel)Application.Current.MainWindow.Content).ActualWidth;
             double nativeHeight = ((Panel)Application.Current.MainWindow.Content).ActualHeight;
             Console.WriteLine("hej " + nativeWidth);
             jonaCanvas.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
             jonaCanvas.Arrange(new Rect(0, 0, nativeWidth, nativeHeight));
-            startY = jonaCanvas.ActualHeight * 0.66; 
+            startY = jonaCanvas.ActualHeight * 0.66;
             Console.WriteLine("hej " + jonaCanvas.ActualHeight);
 
-            jumpingJona = new JumpingJona(new Ellipse(), jonaCanvas);
-
-            DispatcherTimer timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromMilliseconds(1);
-            timer.Tick += new EventHandler(MoveJumpingJona);
-            timer.Start();
-
-            DispatcherTimer update = new DispatcherTimer();
-            update.Interval = TimeSpan.FromMilliseconds(1);
-            update.Tick += UpdateScreen;
-            update.Start();
-
-            DispatcherTimer clock = new DispatcherTimer();
-            lblTime.Content = TimeSpan.FromSeconds(0);
-            clock.Interval = TimeSpan.FromSeconds(1);
-            clock.Tick += StartClock;
-            clock.Start();
-
-            IniScoreCounter();
-            DispatcherTimer score = new DispatcherTimer();
-            scoreText.Text = realScore.ToString();
-            clock.Interval = TimeSpan.FromSeconds(1);
-            clock.Tick += UpdateScore;
-            clock.Start();
+            jumpingJona = new JumpingJonaFastState(new Ellipse(), jonaCanvas);
+            StartTimers();
         }
+        #endregion
 
+        #region Private Methods
         private void IniScoreCounter()
         {
             scoreText = new TextBlock();
@@ -72,17 +53,11 @@ namespace CWPF
         private void MoveJumpingJona(object sender, EventArgs e)
         {
             if (Keyboard.IsKeyDown(Key.Left) || Keyboard.IsKeyDown(Key.A))
-            {
                 jumpingJona.MoveLeft();
-            }
             if (Keyboard.IsKeyDown(Key.Right) || Keyboard.IsKeyDown(Key.D))
-            {
                 jumpingJona.MoveRight();
-            }
             if (Keyboard.IsKeyDown(Key.Up) || Keyboard.IsKeyDown(Key.W) || Keyboard.IsKeyDown(Key.Space))
-            {
                 jumpingJona.Jump();
-            }
         }
 
 
@@ -100,7 +75,26 @@ namespace CWPF
             }
             jumpingJona.Y += jumpingJona.VertSpeed;
             Canvas.SetTop(jumpingJona.Body, jumpingJona.Y);
+        }
+        #endregion
 
+        #region Clock Timers
+        private void StartTimers()
+        {
+            DispatcherTimer miliSecTimer = new DispatcherTimer();
+            miliSecTimer.Interval = TimeSpan.FromMilliseconds(1);
+            miliSecTimer.Tick += new EventHandler(MoveJumpingJona);
+            miliSecTimer.Tick += UpdateScreen;
+            miliSecTimer.Start();
+
+            DispatcherTimer secTimer = new DispatcherTimer();
+            secTimer.Interval = TimeSpan.FromSeconds(1);
+            lblTime.Content = TimeSpan.FromSeconds(0);
+            secTimer.Tick += StartClock;
+            IniScoreCounter();
+            scoreText.Text = realScore.ToString();
+            secTimer.Tick += UpdateScore;
+            secTimer.Start();
         }
 
         private void StartClock(object sender, EventArgs e) 
@@ -114,5 +108,6 @@ namespace CWPF
             realScore -= 5;
             scoreText.Text = realScore.ToString();
         }
+        #endregion
     }
 }
