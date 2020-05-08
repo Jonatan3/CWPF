@@ -13,7 +13,7 @@ namespace CWPF
         public JumpingJonaFastState(Ellipse body, Canvas jonaCanvas, double startY) : base(body, jonaCanvas, startY)
         {
         }
-
+        #region Override methods
         public override void Jump()
         {
             vertSpeed = -3;
@@ -32,6 +32,7 @@ namespace CWPF
             x -= 4;
             Canvas.SetLeft(body, x);
         }
+        #endregion
         #region Properties
         public override double StartY
         {
