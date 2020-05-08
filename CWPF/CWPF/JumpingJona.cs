@@ -10,7 +10,7 @@ using System.Windows.Threading;
 
 namespace CWPF
 {
-    public class JumpingJona
+    public class JumpingJona : IJumpingJona
     {
         private Ellipse body;
         private double vertSpeed, x = 25, y = 0.0;
@@ -21,6 +21,15 @@ namespace CWPF
             this.jonaCanvas = jonaCanvas;
             IniBody();
         }
+        public JumpingJona(Ellipse body, Canvas jonaCanvas, double x, double y, double vertSpeed)
+        {
+            this.body = body;
+            this.jonaCanvas = jonaCanvas;
+            this.x = x;
+            this.y = y;
+            this.vertSpeed = vertSpeed;
+        }
+
         private void IniBody()
         {
             body.Name = "jumpingJona";
@@ -35,7 +44,7 @@ namespace CWPF
             Canvas.SetTop(body, y);
         }
 
-        public void Jumb()
+        public void Jump()
         {
             vertSpeed = -3;
             y += vertSpeed;
