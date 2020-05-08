@@ -16,25 +16,36 @@ namespace CWPF
     public partial class GameWindow : Window
     {
         private JumpingJona jumpingJona;
-        private double startY;
+        
         private double gravity = 0.1;
         private double friction = 0.99;
         private int time = 0, realScore = 500;
         private TextBlock scoreText;
+        private double startY;
+
 
         public GameWindow()
         {
             InitializeComponent();
-            
+
             double nativeWidth = ((Panel)Application.Current.MainWindow.Content).ActualWidth;
             double nativeHeight = ((Panel)Application.Current.MainWindow.Content).ActualHeight;
-            Console.WriteLine("hej " + nativeWidth);
             jonaCanvas.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
             jonaCanvas.Arrange(new Rect(0, 0, nativeWidth, nativeHeight));
-            startY = jonaCanvas.ActualHeight * 0.66; 
-            Console.WriteLine("hej " + jonaCanvas.ActualHeight);
 
-            jumpingJona = new JumpingJona(new Ellipse(), jonaCanvas);
+            startY = jonaCanvas.ActualHeight * (2.0/3.0);
+            jumpingJona = new JumpingJona(new Ellipse(), jonaCanvas, startY);
+
+            Rectangle grass = new Rectangle();
+            grass.Height = jonaCanvas.ActualHeight * (1.0/3.0)-jumpingJona.Body.Height/2;
+            grass.Width = jonaCanvas.ActualWidth;
+            grass.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#6ea147"));
+
+
+            jonaCanvas.Children.Add(grass);
+            Canvas.SetTop(grass, jonaCanvas.ActualHeight - grass.Height);
+
+            
 
             DispatcherTimer timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromMilliseconds(1);
@@ -69,7 +80,7 @@ namespace CWPF
             jonaCanvas.Children.Add(scoreText);
         }
 
-        private void MoveJumpingJona(object sender, EventArgs e)
+        private void MoveJumpingJona(object sender, EventArgs e) 
         {
             if (Keyboard.IsKeyDown(Key.Left) || Keyboard.IsKeyDown(Key.A))
             {
@@ -89,7 +100,7 @@ namespace CWPF
         private void UpdateScreen(object sender, EventArgs e)
         {
 
-            if (jumpingJona.Y + jumpingJona.Body.Height/2 + jumpingJona.Y >= startY)
+            if (jumpingJona.Y + jumpingJona.Body.Height/2 + jumpingJona.VertSpeed >= startY)
             {
                 jumpingJona.VertSpeed = -gravity;
                 jumpingJona.VertSpeed *= friction;

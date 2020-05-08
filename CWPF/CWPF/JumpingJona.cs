@@ -13,12 +13,17 @@ namespace CWPF
     public class JumpingJona
     {
         private Ellipse body;
-        private double vertSpeed, x = 25, y = 0.0;
+        private double vertSpeed, x = 25, y = 0.0, startYY=0.0;
         private Canvas jonaCanvas;
-
-        public JumpingJona(Ellipse body, Canvas jonaCanvas) {
+       public double startY
+        {
+            get { return startYY; }
+            set { startYY = value; }
+        }
+        public JumpingJona(Ellipse body, Canvas jonaCanvas, double startY) {
             this.body = body;
             this.jonaCanvas = jonaCanvas;
+            this.startY = startY;
             IniBody();
         }
         private void IniBody()
@@ -30,7 +35,7 @@ namespace CWPF
             body.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#2185C5"));
             body.Stroke = new SolidColorBrush(Colors.Black);
             jonaCanvas.Children.Add(body);
-            y = y - body.Height / 2;
+            y = startY - body.Height/2;
             Canvas.SetLeft(body, x);
             Canvas.SetTop(body, y);
         }
@@ -69,7 +74,8 @@ namespace CWPF
             get { return y; }
             set { y = value; }
         }
-        public double VertSpeed
+
+         public double VertSpeed
         {
             get { return vertSpeed; }
             set { vertSpeed = value; }
