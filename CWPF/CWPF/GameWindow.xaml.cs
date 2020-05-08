@@ -33,7 +33,7 @@ namespace CWPF
             jonaCanvas.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
             jonaCanvas.Arrange(new Rect(0, 0, nativeWidth, nativeHeight));
             startY = jonaCanvas.ActualHeight * (2.0 / 3.0);
-            jumpingJona = new JumpingJona(new Ellipse(), jonaCanvas, startY);
+            jumpingJona = new JumpingJonaFastState(new Ellipse(), jonaCanvas, startY);
 
             Rectangle grass = new Rectangle();
             grass.Height = jonaCanvas.ActualHeight * (1.0 / 3.0) - jumpingJona.Body.Height / 2;
@@ -42,7 +42,6 @@ namespace CWPF
             startY = jonaCanvas.ActualHeight * 0.66;
             Console.WriteLine("hej " + jonaCanvas.ActualHeight);
 
-            jumpingJona = new JumpingJonaFastState(new Ellipse(), jonaCanvas);
             StartTimers();
         }
         #endregion

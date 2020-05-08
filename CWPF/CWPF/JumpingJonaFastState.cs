@@ -10,7 +10,7 @@ namespace CWPF
 {
     public class JumpingJonaFastState : JumpingJona
     {
-        public JumpingJonaFastState(Ellipse body, Canvas jonaCanvas) : base(body, jonaCanvas)
+        public JumpingJonaFastState(Ellipse body, Canvas jonaCanvas, double startY) : base(body, jonaCanvas, startY)
         {
         }
 
@@ -33,6 +33,11 @@ namespace CWPF
             Canvas.SetLeft(body, x);
         }
         #region Properties
+        public override double StartY
+        {
+            get { return startY; }
+            set { this.startY = value; }
+        }
         public override Ellipse Body
         {
             get { return body; }

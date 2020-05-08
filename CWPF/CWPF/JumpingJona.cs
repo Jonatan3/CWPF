@@ -16,21 +16,18 @@ namespace CWPF
         protected double vertSpeed, x = 25, y = 0.0, startY = 0.0;
         protected Canvas jonaCanvas;
 
-        public double startY
-        {
-            get { return startYY; }
-            set { startYY = value; }
-        }
+
         #region Constructures
-        public JumpingJona(Ellipse body, Canvas jonaCanvas) {
+        public JumpingJona(Ellipse body, Canvas jonaCanvas, double startY) {
             this.body = body;
             this.jonaCanvas = jonaCanvas;
             this.startY = startY;
             IniBody();
         }
-        #endregion
+    #endregion
 
-        #region Properties
+            #region Properties
+        public virtual double StartY { get; set; }
         public virtual Ellipse Body { get; set; }
         public virtual double X { get; set; }
         public virtual double Y { get; set; }
