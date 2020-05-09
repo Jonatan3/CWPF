@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 
@@ -20,8 +21,8 @@ namespace CWPF
         private double gravity = 0.1;
         private double friction = 0.99;
         private int margins = 22;
-        private int time = 0, realScore = 500;
-        private TextBlock scoreText;
+        private int time = 0, realScore = 0;
+        private TextBlock scoreText, clockText;
         private double startY;
 
         #region Constructures
@@ -40,6 +41,7 @@ namespace CWPF
             grass.Height = jonaCanvas.ActualHeight * (1.0/3.0)-jumpingJona.Body.Height/2 -margins;
             grass.Width = jonaCanvas.ActualWidth-margins;
             grass.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#6ea147"));
+            grass.Stroke = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#588139 "));
             jonaCanvas.Children.Add(grass);
             Canvas.SetTop(grass, jonaCanvas.ActualHeight - grass.Height -margins);
             StartTimers();
@@ -50,11 +52,23 @@ namespace CWPF
         private void IniScoreCounter()
         {
             scoreText = new TextBlock();
-            scoreText.FontSize = 20;
+            scoreText.FontSize = 32;
             scoreText.HorizontalAlignment = HorizontalAlignment.Left;
             scoreText.VerticalAlignment = VerticalAlignment.Top;
+            scoreText.Margin = new Thickness(10, 50, 0, 0);
             jonaCanvas.Children.Add(scoreText);
         }
+        private void IniClock()
+        {
+            clockText = new TextBlock();
+            clockText.FontSize = 48;
+            clockText.HorizontalAlignment = HorizontalAlignment.Left;
+            clockText.VerticalAlignment = VerticalAlignment.Top;
+            clockText.Margin = new Thickness(10, 0, 0, 0);
+            jonaCanvas.Children.Add(clockText);
+        }
+
+
 
         private void MoveJumpingJona(object sender, EventArgs e) 
         {
@@ -95,6 +109,7 @@ namespace CWPF
         #region Clock Timers
         private void StartTimers()
         {
+            IniClock();
             DispatcherTimer miliSecTimer = new DispatcherTimer();
             miliSecTimer.Interval = TimeSpan.FromMilliseconds(1);
             miliSecTimer.Tick += new EventHandler(MoveJumpingJona);
@@ -103,7 +118,7 @@ namespace CWPF
 
             DispatcherTimer secTimer = new DispatcherTimer();
             secTimer.Interval = TimeSpan.FromSeconds(1);
-            lblTime.Content = TimeSpan.FromSeconds(0);
+            clockText.Text = TimeSpan.FromSeconds(0).ToString();
             secTimer.Tick += StartClock;
             IniScoreCounter();
             scoreText.Text = realScore.ToString();
@@ -114,12 +129,12 @@ namespace CWPF
         private void StartClock(object sender, EventArgs e) 
         {
             time = ++time;
-            lblTime.Content = TimeSpan.FromSeconds(time);
+            clockText.Text = TimeSpan.FromSeconds(time).ToString();
         }
 
         private void UpdateScore(object sender, EventArgs e)
         {
-            realScore -= 5;
+            realScore += 5;
             scoreText.Text = realScore.ToString();
         }
         #endregion

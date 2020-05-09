@@ -17,9 +17,7 @@
 			</Border.Background>
 
             <Canvas x:Name="jonaCanvas" >
-				<Grid>
-					<Label Name="lblTime" FontSize="48" HorizontalAlignment="Center" VerticalAlignment="Center" />
-				</Grid>
+				
 			</Canvas> 
                 
 		</Border>
