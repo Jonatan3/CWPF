@@ -22,8 +22,7 @@ namespace CWPF
         private int margins = 22;
         private int time = 60*60, realScore = 0, ranPoint;
         private TextBlock scoreText, clockText;
-        private double ranY, ranX, startY, out_, coinRadius = 12.5, r1, r2, x1, x2, y1, y2;
-        private Vector d;
+        private double ranY, ranX, startY, out_, coinRadius = 12.5, x1, x2, y1, y2;
         private Coin[] coinArray = new Coin[25];
         Random rand = new Random();
 
