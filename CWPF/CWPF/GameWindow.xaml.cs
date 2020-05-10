@@ -20,7 +20,7 @@ namespace CWPF
         private double gravity = 0.1;
         private double friction = 0.99;
         private int margins = 22;
-        private int time = 0, realScore = 0, ranPoint;
+        private int time = 60*60, realScore = 0, ranPoint;
         private TextBlock scoreText, clockText;
         private double ranY, ranX, startY, out_, coinRadius = 12.5, r1, r2, x1, x2, y1, y2;
         private Vector d;
@@ -41,8 +41,6 @@ namespace CWPF
 
             jumpingJona = new JumpingJonaSlowState(new Ellipse(), jonaCanvas, startY);
             IniCoins();
-
-            //Console.WriteLine(coinArray[0].Shape.Width);
 
             Rectangle grass = new Rectangle();
             grass.Height = jonaCanvas.ActualHeight * (1.0/3.0)-jumpingJona.Body.Height/2 -margins;
@@ -79,15 +77,7 @@ namespace CWPF
         {
             for (int i = 0; i < 25; i++)
             {
-                ranX = RandomDoubleFromRange(margins, jonaCanvas.ActualWidth - coinRadius*2 - margins);
-                ranY = RandomDoubleFromRange(startY, coinRadius*2 + margins);
-                
-                if (ranY <= startY && ranY > startY * 2.0 / 3.0 ) { ranPoint = 1; }
-                else if (startY * 2.0 / 3.0 >= ranY && ranY >  startY * 1.0 / 3.0) { ranPoint = 2; }
-                else if (startY * 1.0 / 3.0 >= ranY) { ranPoint = 3; }
-                else { ranPoint = 0; }
-
-                coinArray[i] = new Coin(new Ellipse(), jonaCanvas, ranY, ranX, coinRadius, ranPoint);
+                coinArray[i] = makeCoin();
             }
         }
 
@@ -132,41 +122,58 @@ namespace CWPF
         private void StartTimers()
         {
             IniClock();
+            IniScoreCounter();
             DispatcherTimer miliSecTimer = new DispatcherTimer();
             miliSecTimer.Interval = TimeSpan.FromMilliseconds(1);
             miliSecTimer.Tick += new EventHandler(MoveJumpingJona);
             miliSecTimer.Tick += UpdateScreen;
+            miliSecTimer.Tick += StartClock;
+            miliSecTimer.Tick += UpdateScore;
             miliSecTimer.Start();
+            
+            //DispatcherTimer = new DispatcherTimer();
+            //countDowntime.Interval = TimeSpan.FromMilliseconds(time);
+            //countDowntime.Tick += UpdateScore;
+            //countDowntime.Start();
 
-            DispatcherTimer secTimer = new DispatcherTimer();
-            secTimer.Interval = TimeSpan.FromSeconds(1);
             clockText.Text = TimeSpan.FromSeconds(0).ToString();
-            secTimer.Tick += StartClock;
-            IniScoreCounter();
             scoreText.Text = realScore.ToString();
-            secTimer.Tick += UpdateScore;
-            secTimer.Start();
+
         }
 
         private void StartClock(object sender, EventArgs e) 
         {
-            time = ++time;
+            time = --time;
             clockText.Text = TimeSpan.FromSeconds(time).ToString();
         }
 
         private void UpdateScore(object sender, EventArgs e)
         {
-            
             for (int i = 0; i < 25; i++)
             {
-              //  if (CheckCollision(jumpingJona.Body, coinArray[i].Shape))
-               // {
-            realScore += coinArray[i].Point;
-                //}
+                if (CheckCollision(jumpingJona.Body, coinArray[i].Shape))
+                {
+                    realScore += coinArray[i].Point;
+                    jonaCanvas.Children.Remove(coinArray[i].Shape);
+                    jonaCanvas.Children.Remove(coinArray[i].CoinText);
 
+                    coinArray[i] = makeCoin();
+                }
             }
-
             scoreText.Text = realScore.ToString();
+        }
+
+        private Coin makeCoin()
+        {
+            ranX = RandomDoubleFromRange(margins, jonaCanvas.ActualWidth - coinRadius * 2 - margins);
+            ranY = RandomDoubleFromRange(startY, coinRadius * 2 + margins);
+
+            if (ranY <= startY && ranY > startY * 2.0 / 3.0) { ranPoint = 1; }
+            else if (startY * 2.0 / 3.0 >= ranY && ranY > startY * 1.0 / 3.0) { ranPoint = 2; }
+            else if (startY * 1.0 / 3.0 >= ranY) { ranPoint = 3; }
+            else { ranPoint = 0; }
+
+            return new Coin(new Ellipse(), jonaCanvas, ranY, ranX, coinRadius, ranPoint);
         }
 
         private double RandomDoubleFromRange(double min, double max)
@@ -177,14 +184,15 @@ namespace CWPF
 
         public bool CheckCollision(Ellipse e1, Ellipse e2)
         {
-             r1 = e1.Width / 2;
-             x1 = Canvas.GetLeft(e1) + r1;
-             y1 = Canvas.GetTop(e1) + r1;
-             r2 = e2.Width / 2;
-             x2 = Canvas.GetLeft(e2) + r2;
-             y2 = Canvas.GetTop(e2) + r2;
-             d = new Vector(x2 - x1, y2 - y1);
-            return d.Length <= r1 + r2;
+            x1 = Canvas.GetLeft(e1);
+            y1 = Canvas.GetTop(e1);
+            Rect r1 = new Rect(x1, y1, e1.ActualWidth, e1.ActualHeight);
+
+            x2 = Canvas.GetLeft(e2);
+            y2 = Canvas.GetTop(e2);
+            Rect r2 = new Rect(x2, y2, e2.ActualWidth, e2.ActualHeight);
+            
+            return r1.IntersectsWith(r2);
         }
         #endregion
     }

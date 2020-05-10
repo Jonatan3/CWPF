@@ -16,16 +16,34 @@ namespace CWPF
     {
         protected Ellipse shape;
         protected Canvas jonaCanvas;
-        protected double x, x_, y, y_, radius, point;
+        protected double x, x_, y, y_, radius;
+        protected int point;
         protected TextBlock coinText;
         protected Random rand = new Random();
 
 
         #region Properties
-        public virtual Ellipse Shape { get; set; }
-        public virtual double X { get; set; }
-        public virtual double Y { get; set; }
-        public virtual int Point { get; set; }
+        public virtual Ellipse Shape {
+            get { return shape; }
+            set { this.shape = value; } 
+        }
+        public virtual double X {
+            get { return x; } 
+            set { this.x = value; }
+        }
+        public virtual double Y {
+            get { return y; }
+            set { this.Y = value; }
+        }
+        public virtual int Point {
+            get { return point; }
+            set { this.point = value; }
+        }
+        public virtual TextBlock CoinText
+        {
+            get { return coinText; }
+            set { this.coinText.Text = value.ToString(); }
+        }
         #endregion
 
 
