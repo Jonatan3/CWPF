@@ -17,13 +17,14 @@ namespace CWPF
     public partial class GameWindow : Window
     {
         private JumpingJona jumpingJona;
-        
         private double gravity = 0.1;
         private double friction = 0.99;
         private int margins = 22;
-        private int time = 0, realScore = 0;
+        private int time = 0, realScore = 0, ranPoint;
         private TextBlock scoreText, clockText;
-        private double startY;
+        private double ranY, ranX, startY, out_, coinRadius = 12.5;
+        private Coin[] coinArray = new Coin[25];
+        Random rand = new Random();
 
         #region Constructures
         public GameWindow()
@@ -34,8 +35,11 @@ namespace CWPF
             double nativeHeight = ((Panel)Application.Current.MainWindow.Content).ActualHeight;
             jonaCanvas.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
             jonaCanvas.Arrange(new Rect(0, 0, nativeWidth, nativeHeight));
+
             startY = jonaCanvas.ActualHeight * (2.0 / 3.0);
+      
             jumpingJona = new JumpingJonaSlowState(new Ellipse(), jonaCanvas, startY);
+            IniCoins();
 
             Rectangle grass = new Rectangle();
             grass.Height = jonaCanvas.ActualHeight * (1.0/3.0)-jumpingJona.Body.Height/2 -margins;
@@ -68,6 +72,21 @@ namespace CWPF
             jonaCanvas.Children.Add(clockText);
         }
 
+        private void IniCoins()
+        {
+            for (int i = 0; i < 25; i++)
+            {
+                ranX = RandomDoubleFromRange(margins, jonaCanvas.ActualWidth - coinRadius*2 - margins);
+                ranY = RandomDoubleFromRange(startY, coinRadius*2 + margins);
+                
+                if (ranY <= startY && ranY > startY * 2.0 / 3.0 ) { ranPoint = 1; }
+                else if (startY * 2.0 / 3.0 >= ranY && ranY >  startY * 1.0 / 3.0) { ranPoint = 2; }
+                else if (startY * 1.0 / 3.0 >= ranY) { ranPoint = 3; }
+                else { ranPoint = 0; }
+
+                coinArray[i] = new Coin(new Ellipse(), jonaCanvas, ranY, ranX, coinRadius, ranPoint);
+            }
+        }
 
 
         private void MoveJumpingJona(object sender, EventArgs e) 
@@ -83,7 +102,6 @@ namespace CWPF
 
         private void UpdateScreen(object sender, EventArgs e)
         {
-
             if (jumpingJona.Y + jumpingJona.Body.Height / 2 + jumpingJona.VertSpeed >= startY)
             {
                 jumpingJona.VertSpeed = -gravity;
@@ -96,6 +114,7 @@ namespace CWPF
             {
                 jumpingJona.VertSpeed += gravity;
             }
+
             jumpingJona.Y += jumpingJona.VertSpeed;
             Canvas.SetTop(jumpingJona.Body, jumpingJona.Y);
 
@@ -134,8 +153,24 @@ namespace CWPF
 
         private void UpdateScore(object sender, EventArgs e)
         {
-            realScore += 5;
+            
+            for (int i = 0; i < 25; i++)
+            {
+                if (jumpingJona.Y == coinArray[i].Y || jumpingJona.X == coinArray[i].X)
+                {
+                    realScore += coinArray[i].Point;
+                }
+
+            }
+
             scoreText.Text = realScore.ToString();
+        }
+
+        private double RandomDoubleFromRange(double min, double max)
+        {
+            out_ = rand.NextDouble() * (max - min) + min;
+            return out_;
+
         }
         #endregion
     }
