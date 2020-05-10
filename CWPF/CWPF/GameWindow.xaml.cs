@@ -22,7 +22,8 @@ namespace CWPF
         private int margins = 22;
         private int time = 0, realScore = 0, ranPoint;
         private TextBlock scoreText, clockText;
-        private double ranY, ranX, startY, out_, coinRadius = 12.5;
+        private double ranY, ranX, startY, out_, coinRadius = 12.5, r1, r2, x1, x2, y1, y2;
+        private Vector d;
         private Coin[] coinArray = new Coin[25];
         Random rand = new Random();
 
@@ -37,9 +38,11 @@ namespace CWPF
             jonaCanvas.Arrange(new Rect(0, 0, nativeWidth, nativeHeight));
 
             startY = jonaCanvas.ActualHeight * (2.0 / 3.0);
-      
+
             jumpingJona = new JumpingJonaSlowState(new Ellipse(), jonaCanvas, startY);
             IniCoins();
+
+            //Console.WriteLine(coinArray[0].Shape.Width);
 
             Rectangle grass = new Rectangle();
             grass.Height = jonaCanvas.ActualHeight * (1.0/3.0)-jumpingJona.Body.Height/2 -margins;
@@ -156,10 +159,10 @@ namespace CWPF
             
             for (int i = 0; i < 25; i++)
             {
-                if (jumpingJona.Y == coinArray[i].Y || jumpingJona.X == coinArray[i].X)
-                {
-                    realScore += coinArray[i].Point;
-                }
+              //  if (CheckCollision(jumpingJona.Body, coinArray[i].Shape))
+               // {
+            realScore += coinArray[i].Point;
+                //}
 
             }
 
@@ -170,7 +173,18 @@ namespace CWPF
         {
             out_ = rand.NextDouble() * (max - min) + min;
             return out_;
+        }
 
+        public bool CheckCollision(Ellipse e1, Ellipse e2)
+        {
+             r1 = e1.Width / 2;
+             x1 = Canvas.GetLeft(e1) + r1;
+             y1 = Canvas.GetTop(e1) + r1;
+             r2 = e2.Width / 2;
+             x2 = Canvas.GetLeft(e2) + r2;
+             y2 = Canvas.GetTop(e2) + r2;
+             d = new Vector(x2 - x1, y2 - y1);
+            return d.Length <= r1 + r2;
         }
         #endregion
     }

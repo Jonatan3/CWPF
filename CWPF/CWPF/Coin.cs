@@ -20,10 +20,15 @@ namespace CWPF
         protected TextBlock coinText;
         protected Random rand = new Random();
 
+
+        #region Properties
         public virtual Ellipse Shape { get; set; }
         public virtual double X { get; set; }
         public virtual double Y { get; set; }
         public virtual int Point { get; set; }
+        #endregion
+
+
 
         public Coin(Ellipse shape, Canvas jonaCanvas, double y, double x, double radius, int point)
         {
