@@ -27,7 +27,7 @@ namespace CWPF
         Random rand = new Random();
 
         #region Constructures
-        public GameWindow()
+        public GameWindow(bool? hardMode)
         {
             InitializeComponent();
 
@@ -38,7 +38,11 @@ namespace CWPF
 
             startY = jonaCanvas.ActualHeight * (2.0 / 3.0);
 
-            jumpingJona = new JumpingJonaSlowState(new Ellipse(), jonaCanvas, startY);
+            if (hardMode == false || hardMode == null)
+                jumpingJona = new JumpingJonaFastState(new Ellipse(), jonaCanvas, startY);
+            else
+                jumpingJona = new JumpingJonaSlowState(new Ellipse(), jonaCanvas, startY);
+
             IniCoins();
 
             Rectangle grass = new Rectangle();
