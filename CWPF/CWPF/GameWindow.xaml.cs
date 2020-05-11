@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
@@ -29,8 +30,8 @@ namespace CWPF
         #region Constructures
         public GameWindow()
         {
+            
             InitializeComponent();
-
             double nativeWidth = ((Panel)Application.Current.MainWindow.Content).ActualWidth;
             double nativeHeight = ((Panel)Application.Current.MainWindow.Content).ActualHeight;
             jonaCanvas.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
@@ -115,6 +116,35 @@ namespace CWPF
                 jumpingJona.MoveRight();
             }
         }
+        private void ReadHigscore(){
+        
+            // if there is no file create one
+            if (!File.Exists("highscore.txt"))
+            {
+                TextWriter textWriter = new StreamWriter("highscore.txt");
+                textWriter.Write("0");
+                textWriter.Close;
+            }
+
+           TextReader textReader = new StreamReader("highscore.txt");
+           realScore.Text = textReader.ReadLine(textReader);
+           textReader.Close;
+
+        }
+
+        private void WriteHighscore()
+        {
+            // overwrite the file if your score is greater or equal to the current highscore
+            if(realScore >= Convert.ToInt32(realScore.Text))
+            {
+                TextWriter textWriter = new StreamWriter("highscore.txt");
+                textWriter.Write(realScore);
+                textWriter.Close;
+
+            }
+        }
+
+        
         #endregion
 
         #region Clock Timers

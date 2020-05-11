@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Runtime.Remoting.Channels;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
@@ -42,6 +43,18 @@ namespace CWPF
             collaboratorsButton.Click += new RoutedEventHandler(CollaberatorsButton_Click);
             collaboratorsButton.Margin = new Thickness(0, 60, 0, 0);
             buttonGrid.Children.Add(collaboratorsButton);
+            
+            // Highscore Button
+            Button highscoreButton = new Button();
+            highscoreButton.Height = 50;
+            highscoreButton.Width = 100;
+            highscoreButton.Content = "Highscore";
+            highscoreButton.Background = new SolidColorBrush(Colors.Black);
+            highscoreButton.Foreground = new SolidColorBrush(Colors.White);
+            highscoreButton.Click += new RoutedEventHandler(HighscoreButton_Click);
+            highscoreButton.Margin = new Thickness(0,180,0,0);
+            buttonGrid.Children.Add(highscoreButton);
+
         }
         
         private void IniCollab()
@@ -68,6 +81,20 @@ namespace CWPF
             backButton.Click += new RoutedEventHandler(BackButton_Click);
             buttonGrid.Children.Add(backButton);
         }
+
+        private void IniHighscore()
+        {
+
+        Button backButton = new Button();
+            backButton.Height = 50;
+            backButton.Width = 100;
+            backButton.Content = "Main Menu";
+            backButton.Background = new SolidColorBrush(Colors.Black);
+            backButton.Foreground = new SolidColorBrush(Colors.White);
+            backButton.Margin = new Thickness(0, 180, 0, 0);
+            backButton.Click += new RoutedEventHandler(BackButton_Click);
+            buttonGrid.Children.Add(backButton);
+        }
         #endregion
 
         #region Clickers
@@ -85,6 +112,13 @@ namespace CWPF
         {
             buttonGrid.Children.Clear();
             IniMainMenu();
+        }
+
+        private void HighscoreButton_Click(object sender, RoutedEventArgs e)
+        {
+            buttonGrid.Children.Clear();
+            IniHighscore();
+
         }
         #endregion
     }
