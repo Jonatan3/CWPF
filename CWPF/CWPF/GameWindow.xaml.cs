@@ -29,7 +29,7 @@ namespace CWPF
         
 
         #region Constructures
-        public GameWindow()
+        public GameWindow(bool? hardMode)
         {
             coinArray = new Coin[numCoin];
             fieldArray = new Field[numField];
@@ -43,7 +43,11 @@ namespace CWPF
 
             startY = jonaCanvas.ActualHeight * (2.0 / 3.0);
 
-            jumpingJona = new JumpingJonaSlowState(new Ellipse(), jonaCanvas, startY);
+            if (hardMode == false || hardMode == null)
+                jumpingJona = new JumpingJonaFastState(new Ellipse(), jonaCanvas, startY);
+            else
+                jumpingJona = new JumpingJonaSlowState(new Ellipse(), jonaCanvas, startY);
+
             IniCoins();
             IniFields();
 
@@ -115,8 +119,11 @@ namespace CWPF
                 jumpingJona.MoveLeft();
             if (Keyboard.IsKeyDown(Key.Right) || Keyboard.IsKeyDown(Key.D))
                 jumpingJona.MoveRight();
-            if (Keyboard.IsKeyDown(Key.Up) || Keyboard.IsKeyDown(Key.W) || Keyboard.IsKeyDown(Key.Space))
+            if ((Keyboard.IsKeyDown(Key.Up) || Keyboard.IsKeyDown(Key.W) || Keyboard.IsKeyDown(Key.Space)) && jumpingJona.CanJump)
+            {
                 jumpingJona.Jump();
+                jumpingJona.CanJump = false;
+            }
         }
 
 
@@ -127,9 +134,8 @@ namespace CWPF
             {
                 jumpingJona.VertSpeed = -gravity;
                 jumpingJona.VertSpeed *= friction;
-
-            } else if(jumpingJona.Y + jumpingJona.Body.Height/2 + jumpingJona.VertSpeed <= margins)
-            {
+                jumpingJona.CanJump = true;
+            } else if(jumpingJona.Y + jumpingJona.Body.Height/2 + jumpingJona.VertSpeed <= margins){
                 jumpingJona.Y += 4;
                 jumpingJona.VertSpeed += gravity; 
 

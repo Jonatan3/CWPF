@@ -15,7 +15,7 @@ namespace CWPF
         protected Ellipse body;
         protected double vertSpeed, x = 25, y = 0.0, startY = 0.0;
         protected Canvas jonaCanvas;
-
+        protected bool canJump;
 
         #region Constructures
         public JumpingJona(Ellipse body, Canvas jonaCanvas, double startY) {
@@ -24,14 +24,39 @@ namespace CWPF
             this.startY = startY;
             IniBody();
         }
-    #endregion
+        #endregion
 
-            #region Properties
-        public virtual double StartY { get; set; }
-        public virtual Ellipse Body { get; set; }
-        public virtual double X { get; set; }
-        public virtual double Y { get; set; }
-        public virtual double VertSpeed { get; set; }
+        #region Properties
+        public virtual double StartY
+        {
+            get { return startY; }
+            set { this.startY = value; }
+        }
+        public virtual Ellipse Body
+        {
+            get { return body; }
+            set { this.body = value; }
+        }
+        public virtual double X
+        {
+            get { return x; }
+            set { this.x = value; }
+        }
+        public virtual double Y
+        {
+            get { return y; }
+            set { this.y = value; }
+        }
+        public virtual double VertSpeed
+        {
+            get { return vertSpeed; }
+            set { this.vertSpeed = value; }
+        }
+        public virtual bool CanJump
+        {
+            get { return canJump; }
+            set { this.canJump = value; }
+        }
         #endregion
 
         #region Private methods

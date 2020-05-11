@@ -16,7 +16,7 @@ namespace CWPF
         #region Override methods
         public override void Jump()
         {
-            vertSpeed = -3;
+            vertSpeed = -5;
             y += vertSpeed;
             Canvas.SetTop(body, y);
         }
@@ -34,31 +34,12 @@ namespace CWPF
         }
         #endregion
         #region Properties
-        public override double StartY
-        {
-            get { return startY; }
-            set { this.startY = value; }
-        }
-        public override Ellipse Body
-        {
-            get { return body; }
-            set { this.body = value; }
-        }
-        public override double X
-        {
-            get { return x; }
-            set { this.x = value; }
-        }
-        public override double Y
-        {
-            get { return y; }
-            set { this.y = value; }
-        }
-        public override double VertSpeed
-        {
-            get { return vertSpeed; }
-            set { this.vertSpeed = value; }
-        }
+        public override double StartY { get => base.StartY; set => base.StartY = value; }
+        public override Ellipse Body { get => base.Body; set => base.Body = value; }
+        public override double X { get => base.X; set => base.X = value; }
+        public override double Y { get => base.Y; set => base.Y = value; }
+        public override double VertSpeed { get => base.VertSpeed; set => base.VertSpeed = value; }
+        public override bool CanJump { get => base.CanJump; set => base.CanJump = value; }
         #endregion
     }
 }
