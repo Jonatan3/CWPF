@@ -20,10 +20,12 @@ namespace CWPF
         private double gravity = 0.1;
         private double friction = 0.99;
         private int margins = 22;
-        private int time = 60*60, realScore = 0, ranPoint;
+        private int time = 60*60, realScore = 0, ranPoint, fieldSize;
         private TextBlock scoreText, clockText;
         private double ranY, ranX, startY, out_, coinRadius = 12.5, x1, x2, y1, y2;
         private Coin[] coinArray = new Coin[25];
+        private Field[] fieldArray = new Field[40];
+
         Random rand = new Random();
 
         #region Constructures
@@ -40,6 +42,10 @@ namespace CWPF
 
             jumpingJona = new JumpingJonaSlowState(new Ellipse(), jonaCanvas, startY);
             IniCoins();
+            IniFields();
+
+            Console.WriteLine(CheckCollisionRecktangle(fieldArray[0].Box, fieldArray[1].Box));
+
 
             Rectangle grass = new Rectangle();
             grass.Height = jonaCanvas.ActualHeight * (1.0/3.0)-jumpingJona.Body.Height/2 -margins;
@@ -49,6 +55,7 @@ namespace CWPF
             jonaCanvas.Children.Add(grass);
             Canvas.SetTop(grass, jonaCanvas.ActualHeight - grass.Height -margins);
             StartTimers();
+
         }
         #endregion
 
@@ -76,8 +83,30 @@ namespace CWPF
         {
             for (int i = 0; i < 25; i++)
             {
-                coinArray[i] = makeCoin();
+                coinArray[i] = MakeCoin();
             }
+        }
+        int counter = 0;
+        private void IniFields()
+        {
+            for (int i = 0; i < 40; i++)
+            {
+                fieldArray[i] = MakeField();
+
+                for(int j = 0; j<i; j++)
+                {
+                    if (CheckCollisionRecktangle(fieldArray[j].Box, fieldArray[i].Box))
+                    {
+                        jonaCanvas.Children.Remove(fieldArray[i].Box);
+                        fieldArray[i] = MakeField();
+                        i--;
+                    }
+                }
+               
+
+            }
+            Console.WriteLine();
+
         }
 
 
@@ -129,11 +158,6 @@ namespace CWPF
             miliSecTimer.Tick += StartClock;
             miliSecTimer.Tick += UpdateScore;
             miliSecTimer.Start();
-            
-            //DispatcherTimer = new DispatcherTimer();
-            //countDowntime.Interval = TimeSpan.FromMilliseconds(time);
-            //countDowntime.Tick += UpdateScore;
-            //countDowntime.Start();
 
             clockText.Text = TimeSpan.FromSeconds(0).ToString();
             scoreText.Text = realScore.ToString();
@@ -150,19 +174,19 @@ namespace CWPF
         {
             for (int i = 0; i < 25; i++)
             {
-                if (CheckCollision(jumpingJona.Body, coinArray[i].Shape))
+                if (CheckCollisionEllipses(jumpingJona.Body, coinArray[i].Shape))
                 {
                     realScore += coinArray[i].Point;
                     jonaCanvas.Children.Remove(coinArray[i].Shape);
                     jonaCanvas.Children.Remove(coinArray[i].CoinText);
 
-                    coinArray[i] = makeCoin();
+                    coinArray[i] = MakeCoin();
                 }
             }
             scoreText.Text = realScore.ToString();
         }
 
-        private Coin makeCoin()
+        private Coin MakeCoin()
         {
             ranX = RandomDoubleFromRange(margins, jonaCanvas.ActualWidth - coinRadius * 2 - margins);
             ranY = RandomDoubleFromRange(startY, coinRadius * 2 + margins);
@@ -174,6 +198,14 @@ namespace CWPF
 
             return new Coin(new Ellipse(), jonaCanvas, ranY, ranX, coinRadius, ranPoint);
         }
+        private Field MakeField()
+        {
+            ranX = RandomDoubleFromRange(margins, jonaCanvas.ActualWidth - coinRadius * 2 - margins);
+            ranY = RandomDoubleFromRange(startY, coinRadius * 2 + margins);
+            fieldSize = rand.Next(1, 3);
+
+            return new Field(new Rectangle(), jonaCanvas, ranY, ranX, fieldSize);
+        }
 
         private double RandomDoubleFromRange(double min, double max)
         {
@@ -181,7 +213,7 @@ namespace CWPF
             return out_;
         }
 
-        public bool CheckCollision(Ellipse e1, Ellipse e2)
+        public bool CheckCollisionEllipses(Ellipse e1, Ellipse e2)
         {
             x1 = Canvas.GetLeft(e1);
             y1 = Canvas.GetTop(e1);
@@ -193,6 +225,26 @@ namespace CWPF
             
             return r1.IntersectsWith(r2);
         }
+
+        public bool CheckCollisionRecktangle(Rectangle r_1, Rectangle r_2)
+        {
+         
+            Rect r1 = new Rect(Canvas.GetLeft(r_1), Canvas.GetTop(r_1), r_1.Width, r_1.Height);
+            Rect r2 = new Rect(Canvas.GetLeft(r_2), Canvas.GetTop(r_2), r_2.Width, r_2.Height);
+
+            return r1.IntersectsWith(r2);
+        }
+
+
+        public void testFun() 
+        {
+            NetComm.Host server = new NetComm.Host(2020);
+            server.StartConnection();
+        }
+
+            
         #endregion
+
+        
     }
 }
