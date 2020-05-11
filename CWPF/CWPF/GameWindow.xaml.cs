@@ -26,13 +26,11 @@ namespace CWPF
         private Coin[] coinArray;
         private Field[] fieldArray;
         Random rand = new Random();
-        NetComm.Host server;
-        NetComm.Client client;
+        
 
         #region Constructures
         public GameWindow(bool? hardMode)
         {
-            
             coinArray = new Coin[numCoin];
             fieldArray = new Field[numField];
 
@@ -46,20 +44,10 @@ namespace CWPF
             startY = jonaCanvas.ActualHeight * (2.0 / 3.0);
 
             if (hardMode == false || hardMode == null)
-            {
                 jumpingJona = new JumpingJonaFastState(new Ellipse(), jonaCanvas, startY);
-                client = new NetComm.Client();
-                client.Connect("localhost", 9091, "Jack"); 
-            }
             else
-            {
                 jumpingJona = new JumpingJonaSlowState(new Ellipse(), jonaCanvas, startY);
-                server = new NetComm.Host(9091);
-                server.StartConnection();
-                server.onConnection += new NetComm.Host.onConnectionEventHandler(Server_onConnection);
-            }
-           
-            
+
             IniCoins();
             IniFields();
 
@@ -107,15 +95,17 @@ namespace CWPF
             {
                 fieldArray[i] = MakeField();
 
-                for(int j = 0 ; j<i; j++)
+                for(int j = 0; j<i; j++)
                 {
                     if (CheckCollisionRecktangle(fieldArray[j].Box, fieldArray[i].Box))
                     {
                         jonaCanvas.Children.Remove(fieldArray[i].Box);
                         fieldArray[i] = MakeField();
-                        j--;
+                        i--;
                     }
-                }               
+                }
+               
+
             }
             Console.WriteLine();
 
@@ -123,38 +113,21 @@ namespace CWPF
 
         private void MoveJumpingJona(object sender, EventArgs e) 
         {
-            if(client != null)
+            if (Keyboard.IsKeyDown(Key.Left) || Keyboard.IsKeyDown(Key.A))
+                jumpingJona.MoveLeft();
+            if (Keyboard.IsKeyDown(Key.Right) || Keyboard.IsKeyDown(Key.D))
+                jumpingJona.MoveRight();
+            if ((Keyboard.IsKeyDown(Key.Up) || Keyboard.IsKeyDown(Key.W) || Keyboard.IsKeyDown(Key.Space)) && jumpingJona.CanJump)
             {
-                if (Keyboard.IsKeyDown(Key.A))
-                    jumpingJona.MoveLeft();
-                if (Keyboard.IsKeyDown(Key.D))
-                    jumpingJona.MoveRight();
-                if (Keyboard.IsKeyDown(Key.W) && jumpingJona.CanJump)
-                {
-                    jumpingJona.Jump();
-                    jumpingJona.CanJump = false;
-                }
+                jumpingJona.Jump();
+                jumpingJona.CanJump = false;
             }
-            else
-            {
-                if (Keyboard.IsKeyDown(Key.Left))
-                    jumpingJona.MoveLeft();
-                if (Keyboard.IsKeyDown(Key.Right))
-                    jumpingJona.MoveRight();
-                if ((Keyboard.IsKeyDown(Key.Up) || Keyboard.IsKeyDown(Key.Space)) && jumpingJona.CanJump)
-                {
-                    jumpingJona.Jump();
-                    jumpingJona.CanJump = false;
-                }
-            }
-            
         }
-
 
         private void UpdateScreen(object sender, EventArgs e)
         {
 
-            if (jumpingJona.Y + jumpingJona.Body.Height / 2 + jumpingJona.VertSpeed >= startY) 
+            if (jumpingJona.Y + jumpingJona.Body.Height / 2 + jumpingJona.VertSpeed >= startY) // Når Jona rammer græsset 
             {
                 jumpingJona.VertSpeed = -gravity;
                 jumpingJona.VertSpeed *= friction;
@@ -171,24 +144,28 @@ namespace CWPF
             jumpingJona.Y += jumpingJona.VertSpeed;
             Canvas.SetTop(jumpingJona.Body, jumpingJona.Y);
 
-            //If jumpingJona touches the right or left side of the screen 
-            if (jumpingJona.X + jumpingJona.Body.Width/2.0 + jumpingJona.VertSpeed <= margins){ jumpingJona.MoveRight();}  //left
-            else if (jumpingJona.X +jumpingJona.Body.Width/2 + jumpingJona.VertSpeed >= jonaCanvas.ActualWidth -margins){jumpingJona.MoveLeft();} //right
+            if (jumpingJona.X + jumpingJona.Body.Width/2.0 + jumpingJona.VertSpeed <= margins)
+            {
+                jumpingJona.MoveRight();
+            } else if (jumpingJona.X +jumpingJona.Body.Width/2 + jumpingJona.VertSpeed >= jonaCanvas.ActualWidth -margins)
+            {
+                jumpingJona.MoveLeft();
+            }
 
-            //checks whether jona touches a field
             for (int i = 0; i < numField; i++)
             {
                 if (CheckCollisionDifferent(fieldArray[i].Box, jumpingJona.Body))
                 {
                     if (jumpingJona.Y >= fieldArray[i].Y + fieldArray[i].Box.Height - 10)
                     {
-                       
+                        Console.WriteLine("Under");
                         jumpingJona.Y += 4;
                         jumpingJona.VertSpeed += gravity;
+                        jumpingJona.CanJump = true;
                     }
                     else if (jumpingJona.Y <= fieldArray[i].Y + fieldArray[i].Box.Height)
                     {
-                   
+                        Console.WriteLine("Over");
                         jumpingJona.VertSpeed = -gravity;
                         jumpingJona.VertSpeed *= friction;
                         jumpingJona.CanJump = true;
@@ -254,8 +231,8 @@ namespace CWPF
         }
         private Field MakeField()
         {
-            ranX = RandomDoubleFromRange(margins, jonaCanvas.ActualWidth - margins - 90);
-            ranY = RandomDoubleFromRange(startY - 30, 30 + margins);
+            ranX = RandomDoubleFromRange(margins, jonaCanvas.ActualWidth - coinRadius * 2 - margins);
+            ranY = RandomDoubleFromRange(startY, coinRadius * 2 + margins);
             fieldSize = rand.Next(1, 3);
 
             return new Field(new Rectangle(), jonaCanvas, ranY, ranX, fieldSize);
@@ -294,15 +271,13 @@ namespace CWPF
 
         public void testFun() 
         {
-            
+            //NetComm.Host server = new NetComm.Host(2020);
+            //server.StartConnection();
         }
 
-        void Server_onConnection(string id)
-        {
-            Console.WriteLine("User joined: " + id);
-        }
+            
         #endregion
 
-
+        
     }
 }

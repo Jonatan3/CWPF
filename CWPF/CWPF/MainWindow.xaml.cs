@@ -20,7 +20,6 @@ namespace CWPF
         #endregion
 
         #region Initialiser
-      
         private void IniMainMenu()
         {
             // Start game button
@@ -31,7 +30,7 @@ namespace CWPF
             startButton.Background = new SolidColorBrush(Colors.Black);
             startButton.Foreground = new SolidColorBrush(Colors.White);
             startButton.Click += new RoutedEventHandler(StartButton_Click);
-            startButton.Margin = new Thickness(0, 0, 0, 80);
+            startButton.Margin = new Thickness(0, -80, 0, 0);
             buttonGrid.Children.Add(startButton);
 
             // Collaborators button
