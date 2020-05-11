@@ -91,8 +91,11 @@ namespace CWPF
                 jumpingJona.MoveLeft();
             if (Keyboard.IsKeyDown(Key.Right) || Keyboard.IsKeyDown(Key.D))
                 jumpingJona.MoveRight();
-            if (Keyboard.IsKeyDown(Key.Up) || Keyboard.IsKeyDown(Key.W) || Keyboard.IsKeyDown(Key.Space))
+            if ((Keyboard.IsKeyDown(Key.Up) || Keyboard.IsKeyDown(Key.W) || Keyboard.IsKeyDown(Key.Space)) && jumpingJona.CanJump)
+            {
                 jumpingJona.Jump();
+                jumpingJona.CanJump = false;
+            }
         }
 
 
@@ -102,6 +105,7 @@ namespace CWPF
             {
                 jumpingJona.VertSpeed = -gravity;
                 jumpingJona.VertSpeed *= friction;
+                jumpingJona.CanJump = true;
             } else if(jumpingJona.Y + jumpingJona.Body.Height/2 + jumpingJona.VertSpeed <= margins){
                 jumpingJona.Y += 4;
                 jumpingJona.VertSpeed += gravity; 
