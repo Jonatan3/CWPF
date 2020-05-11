@@ -8,7 +8,7 @@ using System.Windows.Shapes;
 
 namespace CWPF
 {
-    public class JumpingJonaSlowState : JumpingJona
+    public class JumpingJonaSlowState : JumpingJona, IJumpingJona
     {
         public JumpingJonaSlowState(Ellipse body, Canvas jonaCanvas, double startY) : base(body, jonaCanvas, startY)
         {

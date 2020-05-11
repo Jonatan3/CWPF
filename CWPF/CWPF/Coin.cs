@@ -21,7 +21,6 @@ namespace CWPF
         protected TextBlock coinText;
         protected Random rand = new Random();
 
-
         #region Properties
         public virtual Ellipse Shape {
             get { return shape; }
@@ -45,9 +44,7 @@ namespace CWPF
             set { this.coinText.Text = value.ToString(); }
         }
         #endregion
-
-
-
+        #region Constructor 
         public Coin(Ellipse shape, Canvas jonaCanvas, double y, double x, double radius, int point)
         {
             this.shape = shape;
@@ -59,9 +56,9 @@ namespace CWPF
             IniShape();
             IniCoinText();
         }
-
-
-        protected void IniShape()
+        #endregion
+        #region Private methods
+        private void IniShape()
         {
             shape.Name = "coin";
             shape.Height = radius*2;
@@ -74,7 +71,7 @@ namespace CWPF
             Canvas.SetTop(shape, y);
         }
 
-        void IniCoinText()
+        private void IniCoinText()
         {
             coinText = new TextBlock();
             coinText.FontSize = 10;
@@ -87,7 +84,7 @@ namespace CWPF
             Canvas.SetTop(coinText, y_);
             Canvas.SetLeft(coinText, x_);
             jonaCanvas.Children.Add(coinText);
-           
         }
+        #endregion
     }
 }

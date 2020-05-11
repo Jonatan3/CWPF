@@ -62,7 +62,6 @@ namespace CWPF
 
         }
         #endregion
-
         #region Private Methods
         private void IniScoreCounter()
         {
@@ -112,7 +111,6 @@ namespace CWPF
 
         }
 
-
         private void MoveJumpingJona(object sender, EventArgs e) 
         {
             if (Keyboard.IsKeyDown(Key.Left) || Keyboard.IsKeyDown(Key.A))
@@ -125,7 +123,6 @@ namespace CWPF
                 jumpingJona.CanJump = false;
             }
         }
-
 
         private void UpdateScreen(object sender, EventArgs e)
         {
@@ -159,25 +156,25 @@ namespace CWPF
             {
                 if (CheckCollisionDifferent(fieldArray[i].Box, jumpingJona.Body))
                 {
-                    if (jumpingJona.Y + jumpingJona.Body.Height <= fieldArray[i].Y)
+                    if (jumpingJona.Y >= fieldArray[i].Y + fieldArray[i].Box.Height - 10)
                     {
-                        Console.WriteLine("________________________");
-                        jumpingJona.VertSpeed = -gravity;
-                        jumpingJona.VertSpeed *= friction;
-                    }
-
-                    
-                    else if (jumpingJona.Y <= fieldArray[i].Y + fieldArray[i].Box.Height)
-                    {
+                        Console.WriteLine("Under");
                         jumpingJona.Y += 4;
                         jumpingJona.VertSpeed += gravity;
-
+                        jumpingJona.CanJump = true;
                     }
+                    else if (jumpingJona.Y <= fieldArray[i].Y + fieldArray[i].Box.Height)
+                    {
+                        Console.WriteLine("Over");
+                        jumpingJona.VertSpeed = -gravity;
+                        jumpingJona.VertSpeed *= friction;
+                        jumpingJona.CanJump = true;
+                    }
+
                 }
             }
         }
         #endregion
-
         #region Clock Timers
         private void StartTimers()
         {
@@ -274,8 +271,8 @@ namespace CWPF
 
         public void testFun() 
         {
-            NetComm.Host server = new NetComm.Host(2020);
-            server.StartConnection();
+            //NetComm.Host server = new NetComm.Host(2020);
+            //server.StartConnection();
         }
 
             
