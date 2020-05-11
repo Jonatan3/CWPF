@@ -20,10 +20,7 @@ namespace CWPF
         #endregion
 
         #region Initialiser
-        void Server_onConnection(string id)
-        {
-            System.Console.WriteLine("User joined: " + id);
-        }
+      
         private void IniMainMenu()
         {
             // Start game button
@@ -33,7 +30,8 @@ namespace CWPF
             startButton.Content = "Start Game";
             startButton.Background = new SolidColorBrush(Colors.Black);
             startButton.Foreground = new SolidColorBrush(Colors.White);
-            startButton.Click += new RoutedEventHandler(StartButton_Click)
+            startButton.Click += new RoutedEventHandler(StartButton_Click);
+            startButton.Margin = new Thickness(0, 0, 0, 80);
             buttonGrid.Children.Add(startButton);
 
             // Collaborators button

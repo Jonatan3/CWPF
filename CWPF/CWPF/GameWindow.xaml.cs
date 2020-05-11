@@ -26,15 +26,13 @@ namespace CWPF
         private Coin[] coinArray;
         private Field[] fieldArray;
         Random rand = new Random();
-        
-        
+        NetComm.Host server;
+        NetComm.Client client;
+
         #region Constructures
         public GameWindow(bool? hardMode)
         {
-            if (hardMode == true)
-            {
-
-            }
+            
             coinArray = new Coin[numCoin];
             fieldArray = new Field[numField];
 
@@ -48,10 +46,20 @@ namespace CWPF
             startY = jonaCanvas.ActualHeight * (2.0 / 3.0);
 
             if (hardMode == false || hardMode == null)
+            {
                 jumpingJona = new JumpingJonaFastState(new Ellipse(), jonaCanvas, startY);
+                client = new NetComm.Client();
+                client.Connect("localhost", 9091, "Jack"); 
+            }
             else
+            {
                 jumpingJona = new JumpingJonaSlowState(new Ellipse(), jonaCanvas, startY);
-
+                server = new NetComm.Host(9091);
+                server.StartConnection();
+                server.onConnection += new NetComm.Host.onConnectionEventHandler(Server_onConnection);
+            }
+           
+            
             IniCoins();
             IniFields();
 
@@ -115,16 +123,33 @@ namespace CWPF
 
         private void MoveJumpingJona(object sender, EventArgs e) 
         {
-            if (Keyboard.IsKeyDown(Key.Left) || Keyboard.IsKeyDown(Key.A))
-                jumpingJona.MoveLeft();
-            if (Keyboard.IsKeyDown(Key.Right) || Keyboard.IsKeyDown(Key.D))
-                jumpingJona.MoveRight();
-            if ((Keyboard.IsKeyDown(Key.Up) || Keyboard.IsKeyDown(Key.W) || Keyboard.IsKeyDown(Key.Space)) && jumpingJona.CanJump)
+            if(client != null)
             {
-                jumpingJona.Jump();
-                jumpingJona.CanJump = false;
+                if (Keyboard.IsKeyDown(Key.A))
+                    jumpingJona.MoveLeft();
+                if (Keyboard.IsKeyDown(Key.D))
+                    jumpingJona.MoveRight();
+                if (Keyboard.IsKeyDown(Key.W) && jumpingJona.CanJump)
+                {
+                    jumpingJona.Jump();
+                    jumpingJona.CanJump = false;
+                }
             }
+            else
+            {
+                if (Keyboard.IsKeyDown(Key.Left))
+                    jumpingJona.MoveLeft();
+                if (Keyboard.IsKeyDown(Key.Right))
+                    jumpingJona.MoveRight();
+                if ((Keyboard.IsKeyDown(Key.Up) || Keyboard.IsKeyDown(Key.Space)) && jumpingJona.CanJump)
+                {
+                    jumpingJona.Jump();
+                    jumpingJona.CanJump = false;
+                }
+            }
+            
         }
+
 
         private void UpdateScreen(object sender, EventArgs e)
         {
@@ -157,13 +182,13 @@ namespace CWPF
                 {
                     if (jumpingJona.Y >= fieldArray[i].Y + fieldArray[i].Box.Height - 10)
                     {
-                        Console.WriteLine("Under");
+                       
                         jumpingJona.Y += 4;
                         jumpingJona.VertSpeed += gravity;
                     }
                     else if (jumpingJona.Y <= fieldArray[i].Y + fieldArray[i].Box.Height)
                     {
-                        Console.WriteLine("Over");
+                   
                         jumpingJona.VertSpeed = -gravity;
                         jumpingJona.VertSpeed *= friction;
                         jumpingJona.CanJump = true;
@@ -269,13 +294,15 @@ namespace CWPF
 
         public void testFun() 
         {
-            //NetComm.Host server = new NetComm.Host(2020);
-            //server.StartConnection();
+            
         }
 
-            
+        void Server_onConnection(string id)
+        {
+            Console.WriteLine("User joined: " + id);
+        }
         #endregion
 
-        
+
     }
 }
