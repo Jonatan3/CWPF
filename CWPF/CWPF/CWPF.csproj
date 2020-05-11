@@ -38,6 +38,9 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="NetComm">
+      <HintPath>..\..\..\..\..\Downloads\NetComm\NetComm.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -72,6 +75,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Coin.cs" />
+    <Compile Include="Field.cs" />
     <Compile Include="GameWindow.xaml.cs">
       <DependentUpon>GameWindow.xaml</DependentUpon>
     </Compile>
