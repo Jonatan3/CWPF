@@ -25,7 +25,6 @@ namespace CWPF
             IniBody();
         }
         #endregion
-
         #region Properties
         public virtual double StartY
         {
@@ -58,7 +57,6 @@ namespace CWPF
             set { this.canJump = value; }
         }
         #endregion
-
         #region Private methods
         protected void IniBody()
         {
@@ -74,7 +72,6 @@ namespace CWPF
             Canvas.SetTop(body, y);
         }
         #endregion
-
         #region Public Methods
         public virtual void Jump()
         {

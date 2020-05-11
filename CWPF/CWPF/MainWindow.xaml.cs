@@ -53,31 +53,6 @@ namespace CWPF
             hardModeBox.Margin = new Thickness(30, 0, 0, 0);
             buttonGrid.Children.Add(hardModeBox);
         }
-        
-        private void IniCollab()
-        {
-            // Textblock
-            TextBlock collaboratorsText = new TextBlock();
-            collaboratorsText.Text = "Collaborators for this project are:\n" + 
-                "Josephine Zaina Brandstrup Weirsøe\n" +
-                "Max Peter Gammelgaard\n"+
-                "Jonatan Amtoft Dahl";
-            collaboratorsText.FontSize = 20;
-            collaboratorsText.HorizontalAlignment = HorizontalAlignment.Center;
-            collaboratorsText.VerticalAlignment = VerticalAlignment.Center;
-            buttonGrid.Children.Add(collaboratorsText);
-
-            // Back button
-            Button backButton = new Button();
-            backButton.Height = 50;
-            backButton.Width = 100;
-            backButton.Content = "Main Menu";
-            backButton.Background = new SolidColorBrush(Colors.Black);
-            backButton.Foreground = new SolidColorBrush(Colors.White);
-            backButton.Margin = new Thickness(0, 180, 0, 0);
-            backButton.Click += new RoutedEventHandler(BackButton_Click);
-            buttonGrid.Children.Add(backButton);
-        }
         #endregion
 
         #region Clickers
@@ -90,11 +65,6 @@ namespace CWPF
         {
             buttonGrid.Children.Clear();
             IniCollab();
-        }
-        private void BackButton_Click(object sender, RoutedEventArgs e)
-        {
-            buttonGrid.Children.Clear();
-            IniMainMenu();
         }
         #endregion
     }

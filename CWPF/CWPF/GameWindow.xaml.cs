@@ -55,7 +55,6 @@ namespace CWPF
             StartTimers();
         }
         #endregion
-
         #region Private Methods
         private void IniScoreCounter()
         {
@@ -84,7 +83,6 @@ namespace CWPF
             }
         }
 
-
         private void MoveJumpingJona(object sender, EventArgs e) 
         {
             if (Keyboard.IsKeyDown(Key.Left) || Keyboard.IsKeyDown(Key.A))
@@ -97,7 +95,6 @@ namespace CWPF
                 jumpingJona.CanJump = false;
             }
         }
-
 
         private void UpdateScreen(object sender, EventArgs e)
         {
@@ -124,7 +121,6 @@ namespace CWPF
             }
         }
         #endregion
-
         #region Clock Timers
         private void StartTimers()
         {
