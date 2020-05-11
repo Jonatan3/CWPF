@@ -156,18 +156,21 @@ namespace CWPF
             {
                 if (CheckCollisionDifferent(fieldArray[i].Box, jumpingJona.Body))
                 {
-                    if (jumpingJona.Y <= fieldArray[i].Y + fieldArray[i].Box.Height)
+                    if (jumpingJona.Y >= fieldArray[i].Y + fieldArray[i].Box.Height - 10)
                     {
+                        Console.WriteLine("Under");
                         jumpingJona.Y += 4;
                         jumpingJona.VertSpeed += gravity;
-                     
+                        jumpingJona.CanJump = true;
                     }
-                    else if (jumpingJona.Y + jumpingJona.Body.Height <= fieldArray[i].Y)
+                    else if (jumpingJona.Y <= fieldArray[i].Y + fieldArray[i].Box.Height)
                     {
-                        Console.WriteLine("________________________");
+                        Console.WriteLine("Over");
                         jumpingJona.VertSpeed = -gravity;
                         jumpingJona.VertSpeed *= friction;
+                        jumpingJona.CanJump = true;
                     }
+
                 }
             }
         }
@@ -268,8 +271,8 @@ namespace CWPF
 
         public void testFun() 
         {
-            NetComm.Host server = new NetComm.Host(2020);
-            server.StartConnection();
+            //NetComm.Host server = new NetComm.Host(2020);
+            //server.StartConnection();
         }
 
             
