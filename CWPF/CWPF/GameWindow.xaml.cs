@@ -27,10 +27,14 @@ namespace CWPF
         private Field[] fieldArray;
         Random rand = new Random();
         
-
+        
         #region Constructures
         public GameWindow(bool? hardMode)
         {
+            if (hardMode == true)
+            {
+
+            }
             coinArray = new Coin[numCoin];
             fieldArray = new Field[numField];
 
@@ -95,17 +99,15 @@ namespace CWPF
             {
                 fieldArray[i] = MakeField();
 
-                for(int j = 0; j<i; j++)
+                for(int j = 0 ; j<i; j++)
                 {
                     if (CheckCollisionRecktangle(fieldArray[j].Box, fieldArray[i].Box))
                     {
                         jonaCanvas.Children.Remove(fieldArray[i].Box);
                         fieldArray[i] = MakeField();
-                        i--;
+                        j--;
                     }
-                }
-               
-
+                }               
             }
             Console.WriteLine();
 
@@ -127,7 +129,7 @@ namespace CWPF
         private void UpdateScreen(object sender, EventArgs e)
         {
 
-            if (jumpingJona.Y + jumpingJona.Body.Height / 2 + jumpingJona.VertSpeed >= startY) // Når Jona rammer græsset 
+            if (jumpingJona.Y + jumpingJona.Body.Height / 2 + jumpingJona.VertSpeed >= startY) 
             {
                 jumpingJona.VertSpeed = -gravity;
                 jumpingJona.VertSpeed *= friction;
@@ -144,14 +146,11 @@ namespace CWPF
             jumpingJona.Y += jumpingJona.VertSpeed;
             Canvas.SetTop(jumpingJona.Body, jumpingJona.Y);
 
-            if (jumpingJona.X + jumpingJona.Body.Width/2.0 + jumpingJona.VertSpeed <= margins)
-            {
-                jumpingJona.MoveRight();
-            } else if (jumpingJona.X +jumpingJona.Body.Width/2 + jumpingJona.VertSpeed >= jonaCanvas.ActualWidth -margins)
-            {
-                jumpingJona.MoveLeft();
-            }
+            //If jumpingJona touches the right or left side of the screen 
+            if (jumpingJona.X + jumpingJona.Body.Width/2.0 + jumpingJona.VertSpeed <= margins){ jumpingJona.MoveRight();}  //left
+            else if (jumpingJona.X +jumpingJona.Body.Width/2 + jumpingJona.VertSpeed >= jonaCanvas.ActualWidth -margins){jumpingJona.MoveLeft();} //right
 
+            //checks whether jona touches a field
             for (int i = 0; i < numField; i++)
             {
                 if (CheckCollisionDifferent(fieldArray[i].Box, jumpingJona.Body))
@@ -161,7 +160,6 @@ namespace CWPF
                         Console.WriteLine("Under");
                         jumpingJona.Y += 4;
                         jumpingJona.VertSpeed += gravity;
-                        jumpingJona.CanJump = true;
                     }
                     else if (jumpingJona.Y <= fieldArray[i].Y + fieldArray[i].Box.Height)
                     {
@@ -231,8 +229,8 @@ namespace CWPF
         }
         private Field MakeField()
         {
-            ranX = RandomDoubleFromRange(margins, jonaCanvas.ActualWidth - coinRadius * 2 - margins);
-            ranY = RandomDoubleFromRange(startY, coinRadius * 2 + margins);
+            ranX = RandomDoubleFromRange(margins, jonaCanvas.ActualWidth - margins - 90);
+            ranY = RandomDoubleFromRange(startY - 30, 30 + margins);
             fieldSize = rand.Next(1, 3);
 
             return new Field(new Rectangle(), jonaCanvas, ranY, ranX, fieldSize);
