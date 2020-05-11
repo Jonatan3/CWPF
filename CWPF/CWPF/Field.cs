@@ -17,7 +17,6 @@ namespace CWPF
         protected double x, y;
         protected int fieldSize = 30, size;
 
-
         #region Properties
         public virtual Rectangle Box
         {
@@ -36,8 +35,6 @@ namespace CWPF
         }
         #endregion
 
-
-
         public Field(Rectangle box, Canvas jonaCanvas, double y, double x, int size)
         {
             this.box = box;
@@ -48,7 +45,6 @@ namespace CWPF
             IniShape();
         }
 
-
         protected void IniShape()
         {
             box.Height = fieldSize;
@@ -58,9 +54,7 @@ namespace CWPF
             jonaCanvas.Children.Add(box);
             Canvas.SetLeft(box, x);
             Canvas.SetTop(box, y);
-
         }
-
     }
 }
 
