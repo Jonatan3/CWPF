@@ -159,17 +159,19 @@ namespace CWPF
             {
                 if (CheckCollisionDifferent(fieldArray[i].Box, jumpingJona.Body))
                 {
-                    if (jumpingJona.Y <= fieldArray[i].Y + fieldArray[i].Box.Height)
-                    {
-                        jumpingJona.Y += 4;
-                        jumpingJona.VertSpeed += gravity;
-                     
-                    }
-                    else if (jumpingJona.Y + jumpingJona.Body.Height <= fieldArray[i].Y)
+                    if (jumpingJona.Y + jumpingJona.Body.Height <= fieldArray[i].Y)
                     {
                         Console.WriteLine("________________________");
                         jumpingJona.VertSpeed = -gravity;
                         jumpingJona.VertSpeed *= friction;
+                    }
+
+                    
+                    else if (jumpingJona.Y <= fieldArray[i].Y + fieldArray[i].Box.Height)
+                    {
+                        jumpingJona.Y += 4;
+                        jumpingJona.VertSpeed += gravity;
+
                     }
                 }
             }
