@@ -88,6 +88,14 @@ namespace CWPF
             {
                 coinArray[i] = MakeCoin();
 
+                if (CheckCollisionEllipses(coinArray[i].Shape, jumpingJona.Body))
+                {
+                    jonaCanvas.Children.Remove(coinArray[i].Shape);
+                    jonaCanvas.Children.Remove(coinArray[i].CoinText);
+                    coinArray[i] = MakeCoin();
+                    i--;
+                }
+
                 for (int j = 0; j < i; j++)
                 {
                     if (CheckCollisionEllipses(coinArray[j].Shape, coinArray[i].Shape))
