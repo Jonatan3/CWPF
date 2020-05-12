@@ -20,7 +20,7 @@ namespace CWPF
         private double gravity = 0.1;
         private double friction = 0.99;
         private int margins = 22;
-        private int time = 60*60, realScore = 0, ranPoint, fieldSize, numField = 30, numCoin = 25;
+        private int time = 60*60, realScore = 0, ranPoint, fieldSize, numField = 30, numCoin = 30;
         private TextBlock scoreText, clockText;
         private double ranY, ranX, startY, out_, coinRadius = 12.5;
         private Coin[] coinArray;
@@ -87,6 +87,17 @@ namespace CWPF
             for (int i = 0; i < numCoin; i++)
             {
                 coinArray[i] = MakeCoin();
+
+                for (int j = 0; j < i; j++)
+                {
+                    if (CheckCollisionEllipses(coinArray[j].Shape, coinArray[i].Shape))
+                    {
+                        jonaCanvas.Children.Remove(coinArray[i].Shape);
+                        jonaCanvas.Children.Remove(coinArray[i].CoinText);
+                        coinArray[i] = MakeCoin();
+                        j--;
+                    }
+                }
             }
         }
         private void IniFields()
@@ -95,13 +106,30 @@ namespace CWPF
             {
                 fieldArray[i] = MakeField();
 
-                for(int j = 0; j<i; j++)
+                if (CheckCollisionDifferent(fieldArray[i].Box, jumpingJona.Body))
+                {
+                    jonaCanvas.Children.Remove(fieldArray[i].Box);
+                    fieldArray[i] = MakeField();
+                    i--;
+                }
+
+                for (int j = 0; j < i; j++)
                 {
                     if (CheckCollisionRecktangle(fieldArray[j].Box, fieldArray[i].Box))
                     {
                         jonaCanvas.Children.Remove(fieldArray[i].Box);
                         fieldArray[i] = MakeField();
-                        i--;
+                        j--;
+                    }
+                }
+
+                for (int j = 0; j < numCoin; j++)
+                {
+                    if (CheckCollisionDifferent(fieldArray[i].Box, coinArray[j].Shape))
+                    {
+                        jonaCanvas.Children.Remove(fieldArray[i].Box);
+                        fieldArray[i] = MakeField();
+                        j--;
                     }
                 }
                
@@ -159,11 +187,11 @@ namespace CWPF
                     if (jumpingJona.Y >= fieldArray[i].Y + fieldArray[i].Box.Height - 10)
                     {
                         Console.WriteLine("Under");
-                        jumpingJona.Y += 4;
+                        jumpingJona.Y += 2;
                         jumpingJona.VertSpeed += gravity;
                         jumpingJona.CanJump = true;
                     }
-                    else if (jumpingJona.Y <= fieldArray[i].Y + fieldArray[i].Box.Height)
+                    else if (jumpingJona.Y <= fieldArray[i].Y + 10)
                     {
                         Console.WriteLine("Over");
                         jumpingJona.VertSpeed = -gravity;
@@ -231,8 +259,8 @@ namespace CWPF
         }
         private Field MakeField()
         {
-            ranX = RandomDoubleFromRange(margins, jonaCanvas.ActualWidth - coinRadius * 2 - margins);
-            ranY = RandomDoubleFromRange(startY, coinRadius * 2 + margins);
+            ranX = RandomDoubleFromRange(margins, jonaCanvas.ActualWidth - margins - 30);
+            ranY = RandomDoubleFromRange(startY - 30, margins + 30);
             fieldSize = rand.Next(1, 3);
 
             return new Field(new Rectangle(), jonaCanvas, ranY, ranX, fieldSize);
