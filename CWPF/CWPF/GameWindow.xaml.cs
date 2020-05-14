@@ -119,29 +119,29 @@ namespace CWPF
                     jonaCanvas.Children.Remove(fieldArray[i].Box);
                     fieldArray[i] = MakeField();
                     i--;
-                }
-
-                for (int j = 0; j < i; j++)
+                } 
+                else
                 {
-                    if (CheckCollisionRecktangle(fieldArray[j].Box, fieldArray[i].Box))
+                    for (int j = 0; j < i; j++)
                     {
-                        jonaCanvas.Children.Remove(fieldArray[i].Box);
-                        fieldArray[i] = MakeField();
-                        j--;
+                        if (CheckCollisionRecktangle(fieldArray[j].Box, fieldArray[i].Box))
+                        {
+                            jonaCanvas.Children.Remove(fieldArray[i].Box);
+                            fieldArray[i] = MakeField();
+                            j--;
+                        }
+                    }
+
+                    for (int j = 0; j < numCoin; j++)
+                    {
+                        if (CheckCollisionDifferent(fieldArray[i].Box, coinArray[j].Shape))
+                        {
+                            jonaCanvas.Children.Remove(fieldArray[i].Box);
+                            fieldArray[i] = MakeField();
+                            j--;
+                        }
                     }
                 }
-
-                for (int j = 0; j < numCoin; j++)
-                {
-                    if (CheckCollisionDifferent(fieldArray[i].Box, coinArray[j].Shape))
-                    {
-                        jonaCanvas.Children.Remove(fieldArray[i].Box);
-                        fieldArray[i] = MakeField();
-                        j--;
-                    }
-                }
-               
-
             }
             Console.WriteLine();
 
