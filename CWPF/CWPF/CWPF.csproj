@@ -74,6 +74,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="BouncingBob.cs" />
     <Compile Include="Coin.cs" />
     <Compile Include="Field.cs" />
     <Compile Include="GameWindow.xaml.cs">

@@ -19,11 +19,13 @@ namespace CWPF
         private JumpingJona jumpingJona;
         private double gravity = 0.1;
         private int margins = 22;
-        private int time = 60 * 60, realScore = 0, ranPoint, fieldSize, numField = 30, numCoin = 40;
+
+        private int time = 60 * 60, realScore = 0, ranPoint, fieldSize, numField = 30, numCoin = 40, numBob = 3;
         private TextBlock scoreText, clockText;
         private double ranY, ranX, startY, out_, coinRadius = 12.5;
         private Coin[] coinArray;
         private Field[] fieldArray;
+        private BouncingBob[] bobArray;
         Random rand = new Random();
 
 
@@ -32,35 +34,30 @@ namespace CWPF
         {
             coinArray = new Coin[numCoin];
             fieldArray = new Field[numField];
-
+            bobArray = new BouncingBob[numBob];
+           
             InitializeComponent();
-
+                       
             double nativeWidth = ((Panel)Application.Current.MainWindow.Content).ActualWidth;
             double nativeHeight = ((Panel)Application.Current.MainWindow.Content).ActualHeight;
             jonaCanvas.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
             jonaCanvas.Arrange(new Rect(0, 0, nativeWidth, nativeHeight));
-
+            
             startY = jonaCanvas.ActualHeight * (2.0 / 3.0);
+            
 
             if (hardMode == false || hardMode == null)
                 jumpingJona = new JumpingJonaFastState(new Ellipse(), jonaCanvas, startY);
             else
                 jumpingJona = new JumpingJonaSlowState(new Ellipse(), jonaCanvas, startY);
-            
-            
+
+            IniBackground();
             IniFields();
             IniCoins();
+            IniBobs();
             
 
-            //Background/grass/bottom
-            Rectangle grass = new Rectangle();
-            grass.Height = jonaCanvas.ActualHeight * (1.0 / 3.0) - jumpingJona.Body.Height / 2 - margins;
-            grass.Width = jonaCanvas.ActualWidth - margins;
-            grass.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#6ea147"));
-            grass.Stroke = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#588139 "));
-            jonaCanvas.Children.Add(grass);
-            Canvas.SetTop(grass, jonaCanvas.ActualHeight - grass.Height - margins);
-            StartTimers();
+            
 
         }
         #endregion
@@ -83,7 +80,18 @@ namespace CWPF
             clockText.Margin = new Thickness(10, 0, 0, 0);
             jonaCanvas.Children.Add(clockText);
         }
-
+        private void IniBackground()
+        {
+            //Background/grass/bottom
+            Rectangle grass = new Rectangle();
+            grass.Height = jonaCanvas.ActualHeight * (1.0 / 3.0) - jumpingJona.Body.Height / 2 - margins;
+            grass.Width = jonaCanvas.ActualWidth - margins;
+            grass.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#6ea147"));
+            grass.Stroke = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#588139 "));
+            jonaCanvas.Children.Add(grass);
+            Canvas.SetTop(grass, jonaCanvas.ActualHeight - grass.Height - margins);
+            StartTimers();
+        }
         private void IniCoins()
         {
             for (int i = 0; i < numCoin; i++)
@@ -145,7 +153,54 @@ namespace CWPF
                 }
             }
         }
+        private void IniBobs()
+        {
+            for (int i = 0; i < numBob; i++)
+            {
+                bobArray[i] = MakeBob();
 
+                if (CheckCollisionEllipses(bobArray[i].Body, jumpingJona.Body))
+                {
+                    jonaCanvas.Children.Remove(bobArray[i].Body);
+                    i--;
+                }
+                else
+                {
+                    for (int j = 0; j < i; j++)
+                    {
+                        if (CheckCollisionEllipses(bobArray[i].Body, bobArray[j].Body))
+                        {
+                            jonaCanvas.Children.Remove(bobArray[i].Body);
+                            i--;
+                        } else
+                        {
+                            for (int k = 0; k < numCoin; k++)
+                            {
+                                if (CheckCollisionEllipses(coinArray[k].Shape, bobArray[i].Body))
+                                {
+                                    jonaCanvas.Children.Remove(bobArray[i].Body);
+                                    i--;
+                                }
+                                else
+                                {
+                                    for (int l = 0; l < numField; l++)
+                                    {
+                                        if (CheckCollisionDifferent(fieldArray[l].Box, bobArray[i].Body))
+                                        {
+                                            jonaCanvas.Children.Remove(bobArray[i].Body);
+                                            i--;
+                                        }
+
+                                    }
+                                }
+
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
         private void MoveJumpingJona(object sender, EventArgs e)
         {
             if (Keyboard.IsKeyDown(Key.Left) || Keyboard.IsKeyDown(Key.A))
@@ -158,10 +213,9 @@ namespace CWPF
                 jumpingJona.CanJump = false;
             }
         }
-
         private void UpdateScreen(object sender, EventArgs e)
         {
-
+            MakeBobBounce(); 
             if (jumpingJona.Y + jumpingJona.Body.Height / 2 + jumpingJona.VertSpeed >= startY) // Græs
             {
                 jumpingJona.VertSpeed = 0;
@@ -268,6 +322,7 @@ namespace CWPF
             clockText.Text = TimeSpan.FromSeconds(0).ToString();
             scoreText.Text = realScore.ToString();
         }
+        #endregion
         private void StartClock(object sender, EventArgs e)
         {
             time = --time;
@@ -339,6 +394,104 @@ namespace CWPF
             
             return new Field(new Rectangle(), jonaCanvas, ranY, ranX, fieldSize);
         }
+        private BouncingBob MakeBob()
+        {
+            ranX = RandomDoubleFromRange(margins, jonaCanvas.ActualWidth - margins - 25);
+            ranY = RandomDoubleFromRange(startY - 50, margins + 25);
+
+            return new BouncingBob(new Ellipse(), jonaCanvas, ranY, ranX);
+        }
+        private void MakeBobBounce()
+        {
+            for (int i = 0; i < numBob; i++)
+            {
+                if (bobArray[i].Y  >= startY) // Græs
+                {
+                    bobArray[i].VertSpeed = - bobArray[i].VertSpeed ;
+                }
+                else if (bobArray[i].Y + bobArray[i].VertSpeed <= margins)
+                { // Top
+                    bobArray[i].Y += 2;
+                    bobArray[i].VertSpeed = -bobArray[i].VertSpeed;
+                }
+                else
+                {
+                    bobArray[i].VertSpeed += gravity;
+                }
+
+                bobArray[i].Y += bobArray[i].VertSpeed;
+                Canvas.SetTop(bobArray[i].Body, bobArray[i].Y);
+
+                if (bobArray[i].X + bobArray[i].VertSpeed <= margins) // Venstre
+                {
+                    bobArray[i].MoveRight();
+                }
+                else if (bobArray[i].X + bobArray[i].Body.Width + bobArray[i].VertSpeed >= jonaCanvas.ActualWidth - margins)  //Højre
+                {
+                    bobArray[i].MoveLeft();
+                }
+
+                for (int j = 0; j < numField; j++)
+                {
+                    if (CheckCollisionDifferent(fieldArray[i].Box, bobArray[i].Body))
+                    {
+                        if (bobArray[i].Y >= fieldArray[i].Y + fieldArray[i].Box.Height - 5 &&
+                            bobArray[i].X + bobArray[i].Body.Width >= fieldArray[i].X &&
+                            bobArray[i].X <= fieldArray[i].X + fieldArray[i].Box.Width) // Under field
+                        {
+                            bobArray[i].Y += 2;
+                            bobArray[i].VertSpeed = -bobArray[i].VertSpeed;
+                        }
+                        else if (bobArray[i].Y + bobArray[i].Body.Height <= fieldArray[i].Y + 10 &&
+                            bobArray[i].X + bobArray[i].Body.Width >= fieldArray[i].X + 10 &&
+                            bobArray[i].X <= fieldArray[i].X + fieldArray[i].Box.Width - 10) // Over field 
+                        {
+                            bobArray[i].VertSpeed = -gravity;
+                        }
+                        else if (bobArray[i].X + bobArray[i].Body.Width >= fieldArray[i].X &&
+                            bobArray[i].X + bobArray[i].Body.Width <= fieldArray[i].X + 5 &&
+                            bobArray[i].Y <= fieldArray[i].Y + fieldArray[i].Box.Height &&
+                            bobArray[i].Y + bobArray[i].Body.Height >= fieldArray[i].Y) //venstre side
+                        {
+                            bobArray[i].MoveLeft();
+                        }
+                        else if (bobArray[i].X <= fieldArray[i].X + fieldArray[i].Box.Width &&
+                            bobArray[i].X >= fieldArray[i].X + fieldArray[i].Box.Width - 5 &&
+                            bobArray[i].Y <= fieldArray[i].Y + fieldArray[i].Box.Height &&
+                            bobArray[i].Y + jumpingJona.Body.Height >= fieldArray[i].Y) //Højre side
+                        {
+                            bobArray[i].MoveRight();
+                        }
+                        else if (bobArray[i].Y > fieldArray[i].Y + fieldArray[i].Box.Height &&
+                          bobArray[i].X > fieldArray[i].X + fieldArray[i].Box.Width) //SØ hjørne
+                        {
+                            bobArray[i].MoveRight();
+                            bobArray[i].Y += 2;
+                            bobArray[i].VertSpeed = -bobArray[i].VertSpeed;
+                        }
+                        else if (bobArray[i].Y > fieldArray[i].Y + fieldArray[i].Box.Height &&
+                          bobArray[i].X + bobArray[i].Body.Width < fieldArray[i].X) // SV Hjørne 
+                        {
+                            bobArray[i].MoveLeft();
+                            bobArray[i].Y += 2;
+                        }
+                        else if (bobArray[i].Y + bobArray[i].Body.Height < fieldArray[i].Y &&
+                          bobArray[i].X + bobArray[i].Body.Width < fieldArray[i].X) // NV hjørne 
+                        {
+                            bobArray[i].MoveLeft();
+                        }
+                        else if (bobArray[i].Y + bobArray[i].Body.Height < fieldArray[i].Y &&
+                              bobArray[i].X > fieldArray[i].X + fieldArray[i].Box.Width)
+                        {
+                            bobArray[i].MoveRight();
+                        }
+
+                    }
+                }
+            }
+
+            
+        }
         private double RandomDoubleFromRange(double min, double max)
         {
             out_ = rand.NextDouble() * (max - min) + min;
@@ -372,7 +525,7 @@ namespace CWPF
         }
 
 
-        #endregion
+        
 
 
     }
