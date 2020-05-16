@@ -405,12 +405,12 @@ namespace CWPF
         {
             for (int i = 0; i < numBob; i++)
             {
-                if (bobArray[i].Y  >= startY) // Græs
+                if (bobArray[i].Y + bobArray[i].VertSpeed >= startY) // Græs
                 {
-                    bobArray[i].VertSpeed = - bobArray[i].VertSpeed ;
+                    bobArray[i].VertSpeed = - bobArray[i].VertSpeed *0.98;
                 }
-                else if (bobArray[i].Y + bobArray[i].VertSpeed <= margins)
-                { // Top
+                else if (bobArray[i].Y + bobArray[i].VertSpeed <= margins)// Top
+                {                   
                     bobArray[i].Y += 2;
                     bobArray[i].VertSpeed = -bobArray[i].VertSpeed;
                 }
@@ -422,66 +422,46 @@ namespace CWPF
                 bobArray[i].Y += bobArray[i].VertSpeed;
                 Canvas.SetTop(bobArray[i].Body, bobArray[i].Y);
 
-                if (bobArray[i].X + bobArray[i].VertSpeed <= margins) // Venstre
-                {
-                    bobArray[i].MoveRight();
-                }
-                else if (bobArray[i].X + bobArray[i].Body.Width + bobArray[i].VertSpeed >= jonaCanvas.ActualWidth - margins)  //Højre
-                {
-                    bobArray[i].MoveLeft();
-                }
 
                 for (int j = 0; j < numField; j++)
                 {
-                    if (CheckCollisionDifferent(fieldArray[i].Box, bobArray[i].Body))
+                    if (CheckCollisionDifferent(fieldArray[j].Box, bobArray[i].Body))
                     {
-                        if (bobArray[i].Y >= fieldArray[i].Y + fieldArray[i].Box.Height - 5 &&
-                            bobArray[i].X + bobArray[i].Body.Width >= fieldArray[i].X &&
-                            bobArray[i].X <= fieldArray[i].X + fieldArray[i].Box.Width) // Under field
+                        if (bobArray[i].Y >= fieldArray[j].Y + fieldArray[j].Box.Height - 5 &&
+                            bobArray[i].X + bobArray[i].Body.Width >= fieldArray[j].X &&
+                            bobArray[i].X <= fieldArray[j].X + fieldArray[j].Box.Width) // Under field
                         {
                             bobArray[i].Y += 2;
                             bobArray[i].VertSpeed = -bobArray[i].VertSpeed;
+
                         }
-                        else if (bobArray[i].Y + bobArray[i].Body.Height <= fieldArray[i].Y + 10 &&
-                            bobArray[i].X + bobArray[i].Body.Width >= fieldArray[i].X + 10 &&
-                            bobArray[i].X <= fieldArray[i].X + fieldArray[i].Box.Width - 10) // Over field 
+                        else if (bobArray[i].Y + bobArray[i].Body.Height <= fieldArray[j].Y + 10 &&
+                            bobArray[i].X + bobArray[i].Body.Width >= fieldArray[j].X + 10 &&
+                            bobArray[i].X <= fieldArray[j].X + fieldArray[j].Box.Width - 10) // Over field 
+
                         {
                             bobArray[i].VertSpeed = -gravity;
                         }
-                        else if (bobArray[i].X + bobArray[i].Body.Width >= fieldArray[i].X &&
-                            bobArray[i].X + bobArray[i].Body.Width <= fieldArray[i].X + 5 &&
-                            bobArray[i].Y <= fieldArray[i].Y + fieldArray[i].Box.Height &&
-                            bobArray[i].Y + bobArray[i].Body.Height >= fieldArray[i].Y) //venstre side
-                        {
-                            bobArray[i].MoveLeft();
-                        }
-                        else if (bobArray[i].X <= fieldArray[i].X + fieldArray[i].Box.Width &&
-                            bobArray[i].X >= fieldArray[i].X + fieldArray[i].Box.Width - 5 &&
-                            bobArray[i].Y <= fieldArray[i].Y + fieldArray[i].Box.Height &&
-                            bobArray[i].Y + jumpingJona.Body.Height >= fieldArray[i].Y) //Højre side
-                        {
-                            bobArray[i].MoveRight();
-                        }
-                        else if (bobArray[i].Y > fieldArray[i].Y + fieldArray[i].Box.Height &&
-                          bobArray[i].X > fieldArray[i].X + fieldArray[i].Box.Width) //SØ hjørne
+                        else if (bobArray[i].Y > fieldArray[j].Y + fieldArray[j].Box.Height &&
+                          bobArray[i].X > fieldArray[j].X + fieldArray[j].Box.Width) //SØ hjørne
                         {
                             bobArray[i].MoveRight();
                             bobArray[i].Y += 2;
                             bobArray[i].VertSpeed = -bobArray[i].VertSpeed;
                         }
-                        else if (bobArray[i].Y > fieldArray[i].Y + fieldArray[i].Box.Height &&
-                          bobArray[i].X + bobArray[i].Body.Width < fieldArray[i].X) // SV Hjørne 
+                        else if (bobArray[i].Y > fieldArray[j].Y + fieldArray[j].Box.Height &&
+                          bobArray[i].X + bobArray[i].Body.Width < fieldArray[j].X) // SV Hjørne 
                         {
                             bobArray[i].MoveLeft();
                             bobArray[i].Y += 2;
                         }
-                        else if (bobArray[i].Y + bobArray[i].Body.Height < fieldArray[i].Y &&
-                          bobArray[i].X + bobArray[i].Body.Width < fieldArray[i].X) // NV hjørne 
+                        else if (bobArray[i].Y + bobArray[i].Body.Height < fieldArray[j].Y &&
+                          bobArray[i].X + bobArray[i].Body.Width < fieldArray[j].X) // NV hjørne 
                         {
                             bobArray[i].MoveLeft();
                         }
-                        else if (bobArray[i].Y + bobArray[i].Body.Height < fieldArray[i].Y &&
-                              bobArray[i].X > fieldArray[i].X + fieldArray[i].Box.Width)
+                        else if (bobArray[i].Y + bobArray[i].Body.Height < fieldArray[j].Y &&
+                              bobArray[i].X > fieldArray[j].X + fieldArray[j].Box.Width)
                         {
                             bobArray[i].MoveRight();
                         }
