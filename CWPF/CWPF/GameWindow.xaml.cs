@@ -370,6 +370,59 @@ namespace CWPF
                             }
                         }
                     }
+                } 
+                else
+                {
+                    for (int j = 0; j < numBob; j++)
+                    {
+                        if (CheckCollisionEllipses(jumpingJona.Body, bobArray[j].Body))
+                        {
+                            realScore -= 10;
+                            jonaCanvas.Children.Remove(bobArray[j].Body);
+                            bobArray[j] = MakeBob();
+
+                            for (int k = 0; k < j; k++)
+                            {
+                                if (CheckCollisionEllipses(bobArray[k].Body, bobArray[j].Body))
+                                {
+                                    jonaCanvas.Children.Remove(bobArray[j].Body);
+                                    bobArray[j] = MakeBob();
+                                    k--;
+                                }
+                                else
+                                {
+                                    for (int l = 0; l < numCoin; l++)
+                                    {
+                                        if (CheckCollisionEllipses(coinArray[l].Shape, bobArray[j].Body))
+                                        {
+                                            jonaCanvas.Children.Remove(bobArray[j].Body);
+                                            bobArray[j] = MakeBob();
+                                            k--;
+                                        }
+                                        else
+                                        {
+                                            for (int m = 0; m < numField; m++)
+                                            {
+                                                if (CheckCollisionDifferent(fieldArray[m].Box, bobArray[j].Body))
+                                                {
+                                                    jonaCanvas.Children.Remove(bobArray[j].Body);
+                                                    bobArray[j] = MakeBob();
+                                                    k--;
+                                                } 
+                                                else if (CheckCollisionEllipses(bobArray[j].Body, jumpingJona.Body))
+                                                {
+                                                    jonaCanvas.Children.Remove(bobArray[j].Body);
+                                                    bobArray[j] = MakeBob();
+                                                    k--;
+                                                }
+
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
             scoreText.Text = realScore.ToString();
@@ -438,9 +491,8 @@ namespace CWPF
                         else if (bobArray[i].Y + bobArray[i].Body.Height <= fieldArray[j].Y + 10 &&
                             bobArray[i].X + bobArray[i].Body.Width >= fieldArray[j].X + 10 &&
                             bobArray[i].X <= fieldArray[j].X + fieldArray[j].Box.Width - 10) // Over field 
-
                         {
-                            bobArray[i].VertSpeed = -gravity;
+                            bobArray[i].VertSpeed = -bobArray[i].VertSpeed * 0.98;
                         }
                         else if (bobArray[i].Y > fieldArray[j].Y + fieldArray[j].Box.Height &&
                           bobArray[i].X > fieldArray[j].X + fieldArray[j].Box.Width) //SØ hjørne
