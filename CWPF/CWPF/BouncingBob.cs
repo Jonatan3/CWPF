@@ -55,7 +55,7 @@ namespace CWPF
             body.Name = "bouncingBob";
             body.Height = 25;
             body.Width = 25;
-            body.StrokeThickness = 1;
+            body.StrokeThickness = 0.5;
             body.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#da5f49"));
             body.Stroke = new SolidColorBrush(Colors.Black);
             jonaCanvas.Children.Add(body);

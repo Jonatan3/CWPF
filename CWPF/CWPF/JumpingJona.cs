@@ -63,7 +63,7 @@ namespace CWPF
             body.Name = "jumpingJona";
             body.Height = 50;
             body.Width = 50;
-            body.StrokeThickness = 1;
+            body.StrokeThickness = 0.5;
             body.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#2185C5"));
             body.Stroke = new SolidColorBrush(Colors.Black);
             jonaCanvas.Children.Add(body);

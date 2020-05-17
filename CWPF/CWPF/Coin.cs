@@ -63,7 +63,7 @@ namespace CWPF
             shape.Name = "coin";
             shape.Height = radius*2;
             shape.Width = radius*2;
-            shape.StrokeThickness = 1;
+            shape.StrokeThickness = 0.5;
             shape.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#d9a760"));
             shape.Stroke = new SolidColorBrush(Colors.Black);
             jonaCanvas.Children.Add(shape);

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.CSharp;
+using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Windows;
@@ -16,16 +17,19 @@ namespace CWPF
     /// </summary>
     public partial class GameWindow : Window
     {
+        DispatcherTimer miliSecTimer = new DispatcherTimer();
+        DispatcherTimer tenSecTimer = new DispatcherTimer();
         private JumpingJona jumpingJona;
         private double gravity = 0.1;
         private int margins = 22;
-
-        private int time = 60 * 60, realScore = 0, ranPoint, fieldSize, numField = 30, numCoin = 40, numBob = 10;
+        private bool power1 = false, power2 = false, power3 = false, PowerExist = false;
+        private int time = 60 * 60, realScore = 0, power, ranPoint, fieldSize, numField = 30, numCoin = 40, numBob = 10;
         private TextBlock scoreText, clockText;
         private double ranY, ranX, startY, out_, coinRadius = 12.5;
         private Coin[] coinArray;
         private Field[] fieldArray;
         private BouncingBob[] bobArray;
+        private PowerUp PU;
         Random rand = new Random();
 
 
@@ -51,13 +55,11 @@ namespace CWPF
             else
                 jumpingJona = new JumpingJonaSlowState(new Ellipse(), jonaCanvas, startY);
 
+            StartTimers();
             IniBackground();
             IniFields();
             IniCoins();
             IniBobs();
-            
-
-            
 
         }
         #endregion
@@ -87,10 +89,10 @@ namespace CWPF
             grass.Height = jonaCanvas.ActualHeight * (1.0 / 3.0) - jumpingJona.Body.Height / 2 - margins;
             grass.Width = jonaCanvas.ActualWidth - margins;
             grass.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#6ea147"));
-            grass.Stroke = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#588139 "));
+            grass.Stroke = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#000000 "));
+            grass.StrokeThickness = 0.5;
             jonaCanvas.Children.Add(grass);
             Canvas.SetTop(grass, jonaCanvas.ActualHeight - grass.Height - margins);
-            StartTimers();
         }
         private void IniCoins()
         {
@@ -171,6 +173,7 @@ namespace CWPF
                         if (CheckCollisionEllipses(bobArray[i].Body, bobArray[j].Body))
                         {
                             jonaCanvas.Children.Remove(bobArray[i].Body);
+                            j = i;
                             i--;
                         } else
                         {
@@ -179,6 +182,8 @@ namespace CWPF
                                 if (CheckCollisionEllipses(coinArray[k].Shape, bobArray[i].Body))
                                 {
                                     jonaCanvas.Children.Remove(bobArray[i].Body);
+                                    k = numCoin;
+                                    j = i;
                                     i--;
                                 }
                                 else
@@ -188,6 +193,9 @@ namespace CWPF
                                         if (CheckCollisionDifferent(fieldArray[l].Box, bobArray[i].Body))
                                         {
                                             jonaCanvas.Children.Remove(bobArray[i].Body);
+                                            l = numField;
+                                            k = numCoin;
+                                            j = i;
                                             i--;
                                         }
 
@@ -211,6 +219,14 @@ namespace CWPF
             {
                 jumpingJona.Jump();
                 jumpingJona.CanJump = false;
+            }
+            if (Keyboard.IsKeyDown(Key.Enter) && jumpingJona.CanJump && power1)
+            {
+                jumpingJona.Jump();
+                jumpingJona.Y = jumpingJona.VertSpeed * 2;
+                jumpingJona.CanJump = false;
+                power1 = false;
+                PowerExist = false;
             }
         }
         private void UpdateScreen(object sender, EventArgs e)
@@ -304,6 +320,13 @@ namespace CWPF
 
                 }
             }
+            if (PowerExist)
+            {
+                if (CheckCollisionDifferent(PU.Body, jumpingJona.Body))
+                {
+                    power1 = true;
+                }
+            }
         }
         #endregion
         #region Clock Timers
@@ -311,13 +334,16 @@ namespace CWPF
         {
             IniClock();
             IniScoreCounter();
-            DispatcherTimer miliSecTimer = new DispatcherTimer();
             miliSecTimer.Interval = TimeSpan.FromMilliseconds(1);
             miliSecTimer.Tick += new EventHandler(MoveJumpingJona);
             miliSecTimer.Tick += UpdateScreen;
             miliSecTimer.Tick += StartClock;
             miliSecTimer.Tick += UpdateScore;
             miliSecTimer.Start();
+
+            tenSecTimer.Interval = TimeSpan.FromSeconds(10);
+            tenSecTimer.Tick += InputPowerUp;
+            tenSecTimer.Start();
 
             clockText.Text = TimeSpan.FromSeconds(0).ToString();
             scoreText.Text = realScore.ToString();
@@ -440,6 +466,11 @@ namespace CWPF
             }
             scoreText.Text = realScore.ToString();
         }
+        private void InputPowerUp(object sender, EventArgs e)
+        {           
+                PU = MakePowerUp();
+                PowerExist = true;
+        }
         private Coin MakeCoin()
         {
             ranX = RandomDoubleFromRange(margins, jonaCanvas.ActualWidth - coinRadius * 2 - margins);
@@ -466,6 +497,12 @@ namespace CWPF
             ranY = RandomDoubleFromRange(startY - 50, margins + 25);
 
             return new BouncingBob(new Ellipse(), jonaCanvas, ranY, ranX);
+        }
+        private PowerUp MakePowerUp()
+        {
+            ranX = RandomDoubleFromRange(margins, jonaCanvas.ActualWidth - margins - 20);
+
+            return new PowerUp(new Rectangle(), jonaCanvas, startY-20, ranX);
         }
         private void MakeBobBounce()
         {
