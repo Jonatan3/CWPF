@@ -417,7 +417,8 @@ namespace CWPF
                                             bobArray[i] = MakeBob();
                                             j--;
                                             l = numField;
-                                            k = numCoin;
+                                            k = numCoin; 
+                                            //Hej
 
                                         }
                                         else if (CheckCollisionEllipses(bobArray[i].Body, jumpingJona.Body))
