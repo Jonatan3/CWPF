@@ -79,7 +79,7 @@ namespace CWPF
             coinText.HorizontalAlignment = HorizontalAlignment.Left;
             coinText.VerticalAlignment = VerticalAlignment.Top;
             x_ = x + radius - coinText.FontSize / 4;
-            y_ = y + radius - coinText.FontSize / 2 - shape.StrokeThickness;
+            y_ = y + radius - coinText.FontSize / 2 - shape.StrokeThickness*2;
             coinText.Text = point.ToString();
             Canvas.SetTop(coinText, y_);
             Canvas.SetLeft(coinText, x_);
