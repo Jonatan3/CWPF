@@ -86,5 +86,10 @@ namespace CWPF
             jonaCanvas.Children.Add(coinText);
         }
         #endregion
+
+        public void CheckCollision()
+        {
+            
+        }
     }
 }

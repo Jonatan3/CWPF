@@ -84,6 +84,92 @@ namespace CWPF
         public virtual void MoveLeft()
         {
         }
+
+        public void MoveJumpingJona(double grassTop, double gravity, int margins)
+        {
+            if (this.Y + this.Body.Height + this.VertSpeed >= grassTop) // Græs
+            {
+                this.VertSpeed = 0;
+                this.CanJump = true;
+            }
+            else if (this.Y <= 0)
+            { // Top
+                this.Y += 2;
+                this.VertSpeed = -this.VertSpeed * gravity;
+            }
+            else
+            {
+                this.VertSpeed += gravity;
+            }
+
+            this.Y += this.VertSpeed;
+            Canvas.SetTop(this.Body, this.Y);
+
+            if (this.X + this.Body.Width / 2.0 + this.VertSpeed <= margins) // Venstre
+            {
+                this.MoveRight();
+            }
+            else if (this.X + this.Body.Width / 2 + this.VertSpeed >= jonaCanvas.ActualWidth - margins)  //Højre
+            {
+                this.MoveLeft();
+            }
+        }
+
+        public void CheckCollision(Field currField, double gravity)
+        {
+            if (this.Y >= currField.Y + currField.Box.Height - 5 &&
+                        this.X + this.Body.Width >= currField.X &&
+                        this.X <= currField.X + currField.Box.Width) // Under field
+            {
+                this.Y += 2;
+                this.VertSpeed = -this.VertSpeed * gravity;
+            }
+            else if (this.Y + this.Body.Height <= currField.Y + 10 &&
+                this.X + this.Body.Width >= currField.X + 10 &&
+                this.X <= currField.X + currField.Box.Width - 10) // Over field 
+            {
+                this.VertSpeed = -gravity;
+                this.CanJump = true;
+
+            }
+            else if (this.X + this.Body.Width >= currField.X &&
+                this.X + this.Body.Width <= currField.X + 5 &&
+                this.Y <= currField.Y + currField.Box.Height &&
+                this.Y + this.Body.Height >= currField.Y) //venstre side
+            {
+                this.MoveLeft();
+            }
+            else if (this.X <= currField.X + currField.Box.Width &&
+                this.X >= currField.X + currField.Box.Width - 5 &&
+                this.Y <= currField.Y + currField.Box.Height &&
+                this.Y + this.Body.Height >= currField.Y) //Højre side
+            {
+                this.MoveRight();
+            }
+            else if (this.Y > currField.Y + currField.Box.Height &&
+              this.X > currField.X + currField.Box.Width) //SØ hjørne
+            {
+                this.MoveRight();
+                this.Y += 2;
+                this.VertSpeed = -this.VertSpeed * gravity;
+            }
+            else if (this.Y > currField.Y + currField.Box.Height &&
+              this.X + this.Body.Width < currField.X) // SV Hjørne 
+            {
+                this.MoveLeft();
+                this.Y += 2;
+            }
+            else if (this.Y + this.Body.Height < currField.Y &&
+              this.X + this.Body.Width < currField.X) // NV hjørne 
+            {
+                this.MoveLeft();
+            }
+            else if (this.Y + this.Body.Height < currField.Y &&
+                  this.X > currField.X + currField.Box.Width)
+            {
+                this.MoveRight();
+            }
+        }
         #endregion
     }
 }
