@@ -5,6 +5,11 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using System.IO;
+using System.Xml.Serialization;
+using System.Collections.ObjectModel;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace CWPF
 {
@@ -25,6 +30,7 @@ namespace CWPF
         private BouncingBob[] bobArray;
         private PowerUp PU;
         private Random rand = new Random();
+        private int MaxHighscoreListEntryCount = 5;
 
         #region Constructures
         public GameWindow(bool? hardMode)
@@ -33,6 +39,7 @@ namespace CWPF
             fieldArray = new Field[numField];
             bobArray = new BouncingBob[numBob];
             InitializeComponent();
+            LoadHighscoreList();
                        
             double nativeWidth = ((Panel)Application.Current.MainWindow.Content).ActualWidth;
             double nativeHeight = ((Panel)Application.Current.MainWindow.Content).ActualHeight;
@@ -49,6 +56,11 @@ namespace CWPF
             IniFields();
             IniCoins();
             IniBobs();
+            
+            bdrHighscoreList.Visibility = Visibility.Collapsed;
+            bdrEndOfGame.Visibility = Visibility.Collapsed;
+            
+
         }
         #endregion
         #region Private Methods
@@ -304,6 +316,7 @@ namespace CWPF
         }
         #endregion
         #region Clock Timers
+
         private void StartTimers()
         {
             IniClock();
@@ -325,8 +338,19 @@ namespace CWPF
         #endregion
         private void StartClock(object sender, EventArgs e)
         {
+          
+            if(time != 0)
+            {
             time = --time;
             clockText.Text = TimeSpan.FromSeconds(time).ToString();
+            }
+            else
+            {
+                EndGame();
+                miliSecTimer.Stop();
+            }
+                    
+            
         }
         private void UpdateScore(object sender, EventArgs e)
         {
@@ -521,5 +545,88 @@ namespace CWPF
             Rect r2 = new Rect(Canvas.GetLeft(s2), Canvas.GetTop(s2), s2.Width, s2.Height);
             return r1.IntersectsWith(r2);
         }
+
+
+        public ObservableCollection<Highscore> HighscoreList
+        {
+        get;
+        set;
+        } = new ObservableCollection<Highscore>();
+       
+        private void ButtonAddHighscore_Click(object sender, RoutedEventArgs e)
+        {
+        int newIndex = 0;
+    
+        if((this.HighscoreList.Count > 0) && (realScore < this.HighscoreList.Max(x => x.Score)))
+        {
+        Highscore justAbove = this.HighscoreList.OrderByDescending(x => x.Score).First(x => x.Score >= realScore);
+        if(justAbove != null)
+        newIndex = this.HighscoreList.IndexOf(justAbove) + 1;
+        }
+    // Create and insert the neew highscore
+        this.HighscoreList.Insert(newIndex, new Highscore()
+        {
+        PlayerName = txtPlayerName.Text,
+        Score = realScore
+        });
+    // Make sure that the amount of higscores does not exceed the maximum (5)
+        while(this.HighscoreList.Count > MaxHighscoreListEntryCount)
+        this.HighscoreList.RemoveAt(MaxHighscoreListEntryCount);
+
+        SaveHighscoreList();
+    
+        bdrNewHighscore.Visibility = Visibility.Collapsed;
+        bdrHighscoreList.Visibility = Visibility.Visible;
+        }
+
+       
+
+    private void LoadHighscoreList()
+        {
+        if(File.Exists("highscorelist.xml"))
+            {
+                XmlSerializer serializer = new XmlSerializer(typeof(List<Highscore>));
+                using(Stream reader = new FileStream("highscorelist.xml", FileMode.Open))
+                {            
+                List<Highscore> tempList = (List<Highscore>)serializer.Deserialize(reader);
+                this.HighscoreList.Clear();
+                foreach(var item in tempList.OrderByDescending(x => x.Score))
+                this.HighscoreList.Add(item);
+                }
+             }
+        }
+
+    private void SaveHighscoreList()
+    {
+        XmlSerializer serializer = new XmlSerializer(typeof(ObservableCollection<Highscore>));
+        using(Stream writer = new FileStream("highscorelist.xml", FileMode.Create))
+        {
+        serializer.Serialize(writer, this.HighscoreList);
+        }
+    }
+
+    private void EndGame()
+    {
+    bool isNewHighscore = false;
+    if(realScore > 0)
+    {
+    int lowestHighscore = (this.HighscoreList.Count > 0 ? this.HighscoreList.Min(x => x.Score) : 0);
+    if((realScore > lowestHighscore) || (this.HighscoreList.Count < MaxHighscoreListEntryCount))
+        {
+        bdrNewHighscore.Visibility = Visibility.Visible;
+        txtPlayerName.Focus();
+        isNewHighscore = true;
+        }
+    }
+    if(!isNewHighscore)
+        {
+        tbFinalScore.Text = realScore.ToString();
+        bdrEndOfGame.Visibility = Visibility.Visible;
+        }
+    
+    }
+    
+        
+
     }
 }
