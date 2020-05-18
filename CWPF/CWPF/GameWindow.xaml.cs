@@ -8,6 +8,11 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using System.IO;
+using System.Xml.Serialization;
+using System.Collections.ObjectModel;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace CWPF
 {
@@ -16,9 +21,11 @@ namespace CWPF
     /// </summary>
     public partial class GameWindow : Window
     {
+       
         private JumpingJona jumpingJona;
         private double gravity = 0.1;
         private int margins = 22;
+        private const int MaxHighscoreListEntryCount = 5;
 
         private int time = 60 * 60, realScore = 0, ranPoint, fieldSize, numField = 30, numCoin = 40, numBob = 10;
         private TextBlock scoreText, clockText;
@@ -27,6 +34,7 @@ namespace CWPF
         private Field[] fieldArray;
         private BouncingBob[] bobArray;
         Random rand = new Random();
+        private DispatcherTimer miliSecTimer = new DispatcherTimer();
 
 
         #region Constructures
@@ -37,6 +45,7 @@ namespace CWPF
             bobArray = new BouncingBob[numBob];
            
             InitializeComponent();
+            LoadHighscoreList();
                        
             double nativeWidth = ((Panel)Application.Current.MainWindow.Content).ActualWidth;
             double nativeHeight = ((Panel)Application.Current.MainWindow.Content).ActualHeight;
@@ -56,7 +65,8 @@ namespace CWPF
             IniCoins();
             IniBobs();
             
-
+            bdrHighscoreList.Visibility = Visibility.Collapsed;
+            bdrEndOfGame.Visibility = Visibility.Collapsed;
             
 
         }
@@ -90,6 +100,7 @@ namespace CWPF
             grass.Stroke = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#588139 "));
             jonaCanvas.Children.Add(grass);
             Canvas.SetTop(grass, jonaCanvas.ActualHeight - grass.Height - margins);
+           
             StartTimers();
         }
         private void IniCoins()
@@ -307,11 +318,12 @@ namespace CWPF
         }
         #endregion
         #region Clock Timers
+
         private void StartTimers()
         {
             IniClock();
             IniScoreCounter();
-            DispatcherTimer miliSecTimer = new DispatcherTimer();
+            miliSecTimer = new DispatcherTimer();
             miliSecTimer.Interval = TimeSpan.FromMilliseconds(1);
             miliSecTimer.Tick += new EventHandler(MoveJumpingJona);
             miliSecTimer.Tick += UpdateScreen;
@@ -325,8 +337,19 @@ namespace CWPF
         #endregion
         private void StartClock(object sender, EventArgs e)
         {
+          
+            if(time != 0)
+            {
             time = --time;
             clockText.Text = TimeSpan.FromSeconds(time).ToString();
+            }
+            else
+            {
+                EndGame();
+                miliSecTimer.Stop();
+            }
+                    
+            
         }
         private void UpdateScore(object sender, EventArgs e)
         {
@@ -577,15 +600,90 @@ namespace CWPF
 
             return r1.IntersectsWith(r2);
         }
-        public void testFun()
+
+
+        public ObservableCollection<Highscore> HighscoreList
         {
-            //NetComm.Host server = new NetComm.Host(2020);
-            //server.StartConnection();
+        get;
+        set;
+        } = new ObservableCollection<Highscore>();
+       
+        private void ButtonAddHighscore_Click(object sender, RoutedEventArgs e)
+        {
+        int newIndex = 0;
+    
+        if((this.HighscoreList.Count > 0) && (realScore < this.HighscoreList.Max(x => x.Score)))
+        {
+        Highscore justAbove = this.HighscoreList.OrderByDescending(x => x.Score).First(x => x.Score >= realScore);
+        if(justAbove != null)
+        newIndex = this.HighscoreList.IndexOf(justAbove) + 1;
+        }
+    // Create and insert the neew highscore
+        this.HighscoreList.Insert(newIndex, new Highscore()
+        {
+        PlayerName = txtPlayerName.Text,
+        Score = realScore
+        });
+    // Make sure that the amount of higscores does not exceed the maximum (5)
+        while(this.HighscoreList.Count > MaxHighscoreListEntryCount)
+        this.HighscoreList.RemoveAt(MaxHighscoreListEntryCount);
+
+        SaveHighscoreList();
+    
+        bdrNewHighscore.Visibility = Visibility.Collapsed;
+        bdrHighscoreList.Visibility = Visibility.Visible;
         }
 
+       
 
+    private void LoadHighscoreList()
+        {
+        if(File.Exists("highscorelist.xml"))
+            {
+                XmlSerializer serializer = new XmlSerializer(typeof(List<Highscore>));
+                using(Stream reader = new FileStream("highscorelist.xml", FileMode.Open))
+                {            
+                List<Highscore> tempList = (List<Highscore>)serializer.Deserialize(reader);
+                this.HighscoreList.Clear();
+                foreach(var item in tempList.OrderByDescending(x => x.Score))
+                this.HighscoreList.Add(item);
+                }
+             }
+        }
+
+    private void SaveHighscoreList()
+    {
+        XmlSerializer serializer = new XmlSerializer(typeof(ObservableCollection<Highscore>));
+        using(Stream writer = new FileStream("highscorelist.xml", FileMode.Create))
+        {
+        serializer.Serialize(writer, this.HighscoreList);
+        }
+    }
+
+    private void EndGame()
+    {
+    bool isNewHighscore = false;
+    if(realScore > 0)
+    {
+    int lowestHighscore = (this.HighscoreList.Count > 0 ? this.HighscoreList.Min(x => x.Score) : 0);
+    if((realScore > lowestHighscore) || (this.HighscoreList.Count < MaxHighscoreListEntryCount))
+        {
+        bdrNewHighscore.Visibility = Visibility.Visible;
+        txtPlayerName.Focus();
+        isNewHighscore = true;
+        }
+    }
+    if(!isNewHighscore)
+        {
+        tbFinalScore.Text = realScore.ToString();
+        bdrEndOfGame.Visibility = Visibility.Visible;
+        }
+    
+    }
+    
         
 
-
     }
+
+    
 }
