@@ -208,6 +208,7 @@ namespace CWPF
                         }
                     }
                 }
+                bobArray[i].MakeBobBounce(fieldArray, startY, margins, gravity);
             }
 
         }
@@ -567,86 +568,13 @@ namespace CWPF
         {
             for (int i = 0; i < numBob; i++)
             {
-                if (bobArray[i].Y + bobArray[i].VertSpeed >= startY) // Græs
-                {
-                    bobArray[i].VertSpeed = - bobArray[i].VertSpeed *0.98;
-                }
-                else if (bobArray[i].Y + bobArray[i].VertSpeed <= margins)// Top
-                {                   
-                    bobArray[i].Y += 2;
-                    bobArray[i].VertSpeed = -bobArray[i].VertSpeed;
-                }
-                else
-                {
-                    bobArray[i].VertSpeed += gravity;
-                }
-
-                bobArray[i].Y += bobArray[i].VertSpeed;
-                Canvas.SetTop(bobArray[i].Body, bobArray[i].Y);
-
-
+                bobArray[i].MakeBobBounce(fieldArray, startY, margins, gravity);
                 for (int j = 0; j < numField; j++)
                 {
                     if (CheckCollisionDifferent(fieldArray[j].Box, bobArray[i].Body))
-                    {
-                        if (bobArray[i].Y >= fieldArray[j].Y + fieldArray[j].Box.Height - 5 &&
-                            bobArray[i].X + bobArray[i].Body.Width >= fieldArray[j].X &&
-                            bobArray[i].X <= fieldArray[j].X + fieldArray[j].Box.Width) // Under field
-                        {
-                            bobArray[i].Y += 2;
-                            bobArray[i].VertSpeed = -bobArray[i].VertSpeed;
-
-                        }
-                        else if (bobArray[i].Y + bobArray[i].Body.Height <= fieldArray[j].Y + 10 &&
-                            bobArray[i].X + bobArray[i].Body.Width >= fieldArray[j].X + 10 &&
-                            bobArray[i].X <= fieldArray[j].X + fieldArray[j].Box.Width - 10) // Over field 
-                        {
-                            bobArray[i].VertSpeed = - gravity - bobArray[i].VertSpeed * 0.99;
-
-                        }
-                        else if (bobArray[i].X + bobArray[i].Body.Width >= fieldArray[j].X &&
-                            bobArray[i].X + bobArray[i].Body.Width <= fieldArray[j].X + 5 &&
-                            bobArray[i].Y <= fieldArray[j].Y + fieldArray[j].Box.Height &&
-                            bobArray[i].Y + bobArray[i].Body.Height >= fieldArray[j].Y) //venstre side
-                        {
-                            bobArray[i].MoveLeft();
-                        }
-                        else if (bobArray[i].X <= fieldArray[j].X + fieldArray[j].Box.Width &&
-                            bobArray[i].X >= fieldArray[j].X + fieldArray[j].Box.Width - 5 &&
-                            bobArray[i].Y <= fieldArray[j].Y + fieldArray[j].Box.Height &&
-                            bobArray[i].Y + bobArray[i].Body.Height >= fieldArray[j].Y) //Højre side
-                        {
-                            bobArray[i].MoveRight();
-                        }
-                        else if (bobArray[i].Y > fieldArray[j].Y + fieldArray[j].Box.Height &&
-                          bobArray[i].X > fieldArray[j].X + fieldArray[j].Box.Width) //SØ hjørne
-                        {
-                            bobArray[i].MoveRight();
-                            bobArray[i].Y += 2;
-                            bobArray[i].VertSpeed = -bobArray[i].VertSpeed;
-                        }
-                        else if (bobArray[i].Y > fieldArray[j].Y + fieldArray[j].Box.Height &&
-                          bobArray[i].X + bobArray[i].Body.Width < fieldArray[j].X) // SV Hjørne 
-                        {
-                            bobArray[i].MoveLeft();
-                            bobArray[i].Y += 2;
-                        }
-                        else if (bobArray[i].Y + bobArray[i].Body.Height < fieldArray[j].Y &&
-                          bobArray[i].X + bobArray[i].Body.Width < fieldArray[j].X) // NV hjørne 
-                        {
-                            bobArray[i].MoveLeft();
-                        }
-                        else if (bobArray[i].Y + bobArray[i].Body.Height < fieldArray[j].Y &&
-                              bobArray[i].X > fieldArray[j].X + fieldArray[j].Box.Width) //NE
-                        {
-                            bobArray[i].MoveRight();
-                        }
-
-                    }
+                        bobArray[i].CheckCollision(fieldArray[j], gravity);
                 }
             }
-
-            
         }
         private double RandomDoubleFromRange(double min, double max)
         {
@@ -674,15 +602,5 @@ namespace CWPF
 
             return r1.IntersectsWith(r2);
         }
-        public void testFun()
-        {
-            //NetComm.Host server = new NetComm.Host(2020);
-            //server.StartConnection();
-        }
-
-
-        
-
-
     }
 }
