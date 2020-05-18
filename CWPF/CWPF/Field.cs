@@ -50,7 +50,8 @@ namespace CWPF
             box.Height = fieldSize;
             box.Width = fieldSize * size;
             box.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#6ea147"));
-            box.Stroke = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#588139 "));
+            box.Stroke = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#000000 "));
+            box.StrokeThickness = 0.5;
             jonaCanvas.Children.Add(box);
             Canvas.SetLeft(box, x);
             Canvas.SetTop(box, y);

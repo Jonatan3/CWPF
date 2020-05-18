@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.CSharp;
+using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Windows;
@@ -21,21 +22,18 @@ namespace CWPF
     /// </summary>
     public partial class GameWindow : Window
     {
-       
+        DispatcherTimer miliSecTimer = new DispatcherTimer();
+        DispatcherTimer tenSecTimer = new DispatcherTimer();
         private JumpingJona jumpingJona;
-        private double gravity = 0.1;
-        private int margins = 22;
-        private const int MaxHighscoreListEntryCount = 5;
-
-        private int time = 60 * 60, realScore = 0, ranPoint, fieldSize, numField = 30, numCoin = 40, numBob = 10;
-        private TextBlock scoreText, clockText;
-        private double ranY, ranX, startY, out_, coinRadius = 12.5;
+        private bool power1 = false, power3 = false, power4 = false, PowerExist = false;
+        private int time = 60 * 60, realScore = 0, numField = 15, numCoin = 25, numBob = 5, margins = 22;
+        private TextBlock scoreText, clockText, powerText = new TextBlock();
+        private double ranY, ranX, startY, out_, coinRadius = 12.5, grassTop, gravity = 0.1;
         private Coin[] coinArray;
         private Field[] fieldArray;
         private BouncingBob[] bobArray;
-        Random rand = new Random();
-        private DispatcherTimer miliSecTimer = new DispatcherTimer();
-
+        private PowerUp PU;
+        private Random rand = new Random();
 
         #region Constructures
         public GameWindow(bool? hardMode)
@@ -43,7 +41,6 @@ namespace CWPF
             coinArray = new Coin[numCoin];
             fieldArray = new Field[numField];
             bobArray = new BouncingBob[numBob];
-           
             InitializeComponent();
             LoadHighscoreList();
                        
@@ -51,15 +48,13 @@ namespace CWPF
             double nativeHeight = ((Panel)Application.Current.MainWindow.Content).ActualHeight;
             jonaCanvas.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
             jonaCanvas.Arrange(new Rect(0, 0, nativeWidth, nativeHeight));
-            
             startY = jonaCanvas.ActualHeight * (2.0 / 3.0);
             
-
             if (hardMode == false || hardMode == null)
                 jumpingJona = new JumpingJonaFastState(new Ellipse(), jonaCanvas, startY);
             else
                 jumpingJona = new JumpingJonaSlowState(new Ellipse(), jonaCanvas, startY);
-
+            StartTimers();
             IniBackground();
             IniFields();
             IniCoins();
@@ -92,16 +87,35 @@ namespace CWPF
         }
         private void IniBackground()
         {
-            //Background/grass/bottom
+            BouncingBob bob;
+            Coin coin;
+            PowerUp p1, p2, p3, p4;
+            TextBlock p1_t = new TextBlock(), p2_t = new TextBlock(), p3_t = new TextBlock(),
+                p4_t = new TextBlock(), coin_t = new TextBlock(), bob_t = new TextBlock();
             Rectangle grass = new Rectangle();
+
+            //Background/grass/bottom
             grass.Height = jonaCanvas.ActualHeight * (1.0 / 3.0) - jumpingJona.Body.Height / 2 - margins;
             grass.Width = jonaCanvas.ActualWidth - margins;
             grass.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#6ea147"));
-            grass.Stroke = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#588139 "));
+            grass.Stroke = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#000000 "));
+            grass.StrokeThickness = 0.5;
             jonaCanvas.Children.Add(grass);
-            Canvas.SetTop(grass, jonaCanvas.ActualHeight - grass.Height - margins);
-           
-            StartTimers();
+            grassTop = jonaCanvas.ActualHeight - grass.Height - margins;
+            Canvas.SetTop(grass, grassTop);
+
+            bob = new BouncingBob(new Ellipse(), jonaCanvas, jonaCanvas.ActualHeight - 100 , 400);
+            BottomText(bob_t, 440, jonaCanvas.ActualHeight - 97, "-10 points");
+            coin = new Coin(new Ellipse(), jonaCanvas, jonaCanvas.ActualHeight - 100, 600, coinRadius, 3);
+            BottomText(coin_t, 640, jonaCanvas.ActualHeight - 97, "+ points");
+            p1 = new PowerUp(new Rectangle(), jonaCanvas, jonaCanvas.ActualHeight - 97.5, 800, 1);
+            BottomText(p1_t, 835, jonaCanvas.ActualHeight - 97, "Double Jump");
+            p2 = new PowerUp(new Rectangle(), jonaCanvas, jonaCanvas.ActualHeight - 97.5, 1000, 2);
+            BottomText(p2_t, 1035, jonaCanvas.ActualHeight - 97, "+5 secs");
+            p3 = new PowerUp(new Rectangle(), jonaCanvas, jonaCanvas.ActualHeight - 97.5, 1200, 3);
+            BottomText(p3_t, 1235, jonaCanvas.ActualHeight - 97,"Size down");
+            p4 = new PowerUp(new Rectangle(), jonaCanvas, jonaCanvas.ActualHeight - 97.5, 1400, 4);
+            BottomText(p4_t, 1435, jonaCanvas.ActualHeight - 97, "Size up");
         }
         private void IniCoins()
         {
@@ -158,6 +172,7 @@ namespace CWPF
                         if (CheckCollisionRecktangle(fieldArray[j].Box, fieldArray[i].Box))
                         {
                             jonaCanvas.Children.Remove(fieldArray[i].Box);
+                            j = i;
                             i--;
                         } 
                     } 
@@ -182,6 +197,7 @@ namespace CWPF
                         if (CheckCollisionEllipses(bobArray[i].Body, bobArray[j].Body))
                         {
                             jonaCanvas.Children.Remove(bobArray[i].Body);
+                            j = i;
                             i--;
                         } else
                         {
@@ -190,6 +206,8 @@ namespace CWPF
                                 if (CheckCollisionEllipses(coinArray[k].Shape, bobArray[i].Body))
                                 {
                                     jonaCanvas.Children.Remove(bobArray[i].Body);
+                                    k = numCoin;
+                                    j = i;
                                     i--;
                                 }
                                 else
@@ -199,6 +217,9 @@ namespace CWPF
                                         if (CheckCollisionDifferent(fieldArray[l].Box, bobArray[i].Body))
                                         {
                                             jonaCanvas.Children.Remove(bobArray[i].Body);
+                                            l = numField;
+                                            k = numCoin;
+                                            j = i;
                                             i--;
                                         }
 
@@ -209,8 +230,8 @@ namespace CWPF
                         }
                     }
                 }
+                bobArray[i].MakeBobBounce(fieldArray, startY, margins, gravity);
             }
-
         }
         private void MoveJumpingJona(object sender, EventArgs e)
         {
@@ -223,96 +244,76 @@ namespace CWPF
                 jumpingJona.Jump();
                 jumpingJona.CanJump = false;
             }
+            if (Keyboard.IsKeyDown(Key.Enter) && ((jumpingJona.CanJump && power1) || power3 ||power4))
+            {
+                jonaCanvas.Children.Remove(powerText);
+                if (power1)
+                {
+                    jumpingJona.VertSpeed = -10;
+                    jumpingJona.Y += jumpingJona.VertSpeed;
+                    jumpingJona.CanJump = false;
+                    power1 = false;
+                }
+                else if (power3)
+                {
+                    jumpingJona.Body.Height -= 10;
+                    jumpingJona.Body.Width -= 10;
+                    power3 = false;
+                }
+                else if (power4)
+                {
+                    jumpingJona.Body.Height += 10;
+                    jumpingJona.Body.Width += 10;
+                    jumpingJona.Y -= 10;
+                    power4 = false;
+                }
+            }
         }
         private void UpdateScreen(object sender, EventArgs e)
         {
-            MakeBobBounce(); 
-            if (jumpingJona.Y + jumpingJona.Body.Height / 2 + jumpingJona.VertSpeed >= startY) // Græs
-            {
-                jumpingJona.VertSpeed = 0;
-                jumpingJona.CanJump = true;
-
-            }
-            else if (jumpingJona.Y + jumpingJona.Body.Height / 2 + jumpingJona.VertSpeed <= margins)
-            { // Top
-                jumpingJona.Y += 2;
-                jumpingJona.VertSpeed = -jumpingJona.VertSpeed * gravity;
-
-            }
-            else
-            {
-                jumpingJona.VertSpeed += gravity;
-            }
-
-            jumpingJona.Y += jumpingJona.VertSpeed;
-            Canvas.SetTop(jumpingJona.Body, jumpingJona.Y);
-
-            if (jumpingJona.X + jumpingJona.Body.Width / 2.0 + jumpingJona.VertSpeed <= margins) // Venstre
-            {
-                jumpingJona.MoveRight();
-            }
-            else if (jumpingJona.X + jumpingJona.Body.Width / 2 + jumpingJona.VertSpeed >= jonaCanvas.ActualWidth - margins)  //Højre
-            {
-                jumpingJona.MoveLeft();
-            }
-
+            jumpingJona.MoveJumpingJona(grassTop, gravity, margins);
             for (int i = 0; i < numField; i++)
             {
                 if (CheckCollisionDifferent(fieldArray[i].Box, jumpingJona.Body))
+                    jumpingJona.CheckCollision(fieldArray[i], gravity);
+            }
+            if (PowerExist)
+            {
+                if (CheckCollisionDifferent(PU.Body, jumpingJona.Body))
                 {
-                    if (jumpingJona.Y >= fieldArray[i].Y + fieldArray[i].Box.Height - 5 &&
-                        jumpingJona.X + jumpingJona.Body.Width >= fieldArray[i].X &&
-                        jumpingJona.X <= fieldArray[i].X + fieldArray[i].Box.Width) // Under field
-                    {
-                        jumpingJona.Y += 2;
-                        jumpingJona.VertSpeed = -jumpingJona.VertSpeed * gravity;
-                    }
-                    else if (jumpingJona.Y + jumpingJona.Body.Height <= fieldArray[i].Y + 10 &&
-                        jumpingJona.X + jumpingJona.Body.Width >= fieldArray[i].X + 10 &&
-                        jumpingJona.X <= fieldArray[i].X + fieldArray[i].Box.Width - 10) // Over field 
-                    {
-                        jumpingJona.VertSpeed = -gravity;
-                        jumpingJona.CanJump = true;
+                    jonaCanvas.Children.Remove(powerText);
 
-                    }
-                    else if (jumpingJona.X + jumpingJona.Body.Width >= fieldArray[i].X &&
-                        jumpingJona.X + jumpingJona.Body.Width <= fieldArray[i].X + 5 &&
-                        jumpingJona.Y <= fieldArray[i].Y + fieldArray[i].Box.Height &&
-                        jumpingJona.Y + jumpingJona.Body.Height >= fieldArray[i].Y) //venstre side
+                    if (PU.Power == 1)
                     {
-                        jumpingJona.MoveLeft();
+                        power1 = true;
+                        power3 = false;
+                        power4 = false;
+                        BottomText(powerText, 880, jonaCanvas.ActualHeight - 200, "Pres ENTER to use Double Jump");
                     }
-                    else if (jumpingJona.X <= fieldArray[i].X + fieldArray[i].Box.Width &&
-                        jumpingJona.X >= fieldArray[i].X + fieldArray[i].Box.Width - 5 &&
-                        jumpingJona.Y <= fieldArray[i].Y + fieldArray[i].Box.Height &&
-                        jumpingJona.Y + jumpingJona.Body.Height >= fieldArray[i].Y) //Højre side
+                    else if (PU.Power == 2)
                     {
-                        jumpingJona.MoveRight();
+                        time += 5 * 60;
+                        power1 = false;
+                        power3 = false;
+                        power4 = false;
+                        BottomText(powerText, 900, jonaCanvas.ActualHeight - 200, "You just got +5 secs!");
                     }
-                    else if (jumpingJona.Y > fieldArray[i].Y + fieldArray[i].Box.Height &&
-                      jumpingJona.X > fieldArray[i].X + fieldArray[i].Box.Width) //SØ hjørne
+                    else if (PU.Power == 3)
                     {
-                        jumpingJona.MoveRight();
-                        jumpingJona.Y += 2;
-                        jumpingJona.VertSpeed = -jumpingJona.VertSpeed * gravity;
+                        power1 = false;
+                        power3 = true;
+                        power4 = false;
+                        BottomText(powerText, 880, jonaCanvas.ActualHeight - 200, "Pres ENTER to use Size Down");
                     }
-                    else if (jumpingJona.Y > fieldArray[i].Y + fieldArray[i].Box.Height &&
-                      jumpingJona.X + jumpingJona.Body.Width < fieldArray[i].X) // SV Hjørne 
+                    else if (PU.Power == 4)
                     {
-                        jumpingJona.MoveLeft();
-                        jumpingJona.Y += 2;
+                        power1 = false;
+                        power3 = false;
+                        power4 = true;
+                        BottomText(powerText, 880, jonaCanvas.ActualHeight - 200, "Pres ENTER to use Size Up");
                     }
-                    else if (jumpingJona.Y + jumpingJona.Body.Height < fieldArray[i].Y &&
-                      jumpingJona.X + jumpingJona.Body.Width < fieldArray[i].X) // NV hjørne 
-                    {
-                        jumpingJona.MoveLeft();
-                    }
-                    else if (jumpingJona.Y + jumpingJona.Body.Height < fieldArray[i].Y &&
-                          jumpingJona.X > fieldArray[i].X + fieldArray[i].Box.Width)
-                    {
-                        jumpingJona.MoveRight();
-                    }
-
+                    jonaCanvas.Children.Remove(PU.Body);
+                    PowerExist = false;
                 }
             }
         }
@@ -323,14 +324,17 @@ namespace CWPF
         {
             IniClock();
             IniScoreCounter();
-            miliSecTimer = new DispatcherTimer();
             miliSecTimer.Interval = TimeSpan.FromMilliseconds(1);
             miliSecTimer.Tick += new EventHandler(MoveJumpingJona);
             miliSecTimer.Tick += UpdateScreen;
             miliSecTimer.Tick += StartClock;
             miliSecTimer.Tick += UpdateScore;
+            miliSecTimer.Tick += MakeBobBounce;
             miliSecTimer.Start();
 
+            tenSecTimer.Interval = TimeSpan.FromSeconds(10);
+            tenSecTimer.Tick += InputPowerUp;
+            tenSecTimer.Start();
             clockText.Text = TimeSpan.FromSeconds(0).ToString();
             scoreText.Text = realScore.ToString();
         }
@@ -385,7 +389,7 @@ namespace CWPF
                                     jonaCanvas.Children.Remove(coinArray[i].CoinText);
                                     coinArray[i] = MakeCoin();
                                     j--;
-                                    k = numField;
+                                    break;
                                 }
                                 else if (CheckCollisionEllipses(coinArray[i].Shape, jumpingJona.Body))
                                 {
@@ -393,13 +397,13 @@ namespace CWPF
                                     jonaCanvas.Children.Remove(coinArray[i].CoinText);
                                     coinArray[i] = MakeCoin();
                                     j--;
+                                    break;
                                 }
                             }
                         }
                     }
                 }  
             }
-
             for (int i = 0; i < numBob; i++)
             {
                 if (CheckCollisionEllipses(jumpingJona.Body, bobArray[i].Body))
@@ -440,7 +444,8 @@ namespace CWPF
                                             bobArray[i] = MakeBob();
                                             j--;
                                             l = numField;
-                                            k = numCoin;
+                                            k = numCoin; 
+                                            //Hej hej 
 
                                         }
                                         else if (CheckCollisionEllipses(bobArray[i].Body, jumpingJona.Body))
@@ -462,117 +467,63 @@ namespace CWPF
             }
             scoreText.Text = realScore.ToString();
         }
+        private void InputPowerUp(object sender, EventArgs e)
+        {
+            if (PowerExist)
+                jonaCanvas.Children.Remove(PU.Body); 
+            PU = MakePowerUp();
+            PowerExist = true;
+        }
         private Coin MakeCoin()
         {
             ranX = RandomDoubleFromRange(margins, jonaCanvas.ActualWidth - coinRadius * 2 - margins);
             ranY = RandomDoubleFromRange(startY, coinRadius * 2 + margins);
 
+            int ranPoint;
             if (ranY <= startY && ranY > startY * 2.0 / 3.0) { ranPoint = 1; }
             else if (startY * 2.0 / 3.0 >= ranY && ranY > startY * 1.0 / 3.0) { ranPoint = 2; }
             else if (startY * 1.0 / 3.0 >= ranY) { ranPoint = 3; }
             else { ranPoint = 0; }
-
             return new Coin(new Ellipse(), jonaCanvas, ranY, ranX, coinRadius, ranPoint);
         }
         private Field MakeField()
         {
-            fieldSize = rand.Next(1, 4);
+            int fieldSize = rand.Next(3, 6);
             ranX = RandomDoubleFromRange(margins, jonaCanvas.ActualWidth - margins - 30*fieldSize);
             ranY = RandomDoubleFromRange(startY - jumpingJona.Body.Height, margins + jumpingJona.Body.Height);
-            
             return new Field(new Rectangle(), jonaCanvas, ranY, ranX, fieldSize);
         }
         private BouncingBob MakeBob()
         {
             ranX = RandomDoubleFromRange(margins, jonaCanvas.ActualWidth - margins - 25);
             ranY = RandomDoubleFromRange(startY - 50, margins + 25);
-
             return new BouncingBob(new Ellipse(), jonaCanvas, ranY, ranX);
         }
-        private void MakeBobBounce()
+        private PowerUp MakePowerUp()
+        {
+            int power = rand.Next(1, 5);
+            ranX = RandomDoubleFromRange(margins, jonaCanvas.ActualWidth - margins - 20);
+            return new PowerUp(new Rectangle(), jonaCanvas, grassTop - 20 , ranX, power);
+        }
+        private void BottomText(TextBlock text, double x, double y, string str)
+        {
+            text.FontSize = 14;
+            text.Text = str;
+            Canvas.SetTop(text, y);
+            Canvas.SetLeft(text, x);
+            jonaCanvas.Children.Add(text);
+        } 
+        private void MakeBobBounce(object sender, EventArgs e)
         {
             for (int i = 0; i < numBob; i++)
             {
-                if (bobArray[i].Y + bobArray[i].VertSpeed >= startY) // Græs
-                {
-                    bobArray[i].VertSpeed = - bobArray[i].VertSpeed *0.98;
-                }
-                else if (bobArray[i].Y + bobArray[i].VertSpeed <= margins)// Top
-                {                   
-                    bobArray[i].Y += 2;
-                    bobArray[i].VertSpeed = -bobArray[i].VertSpeed;
-                }
-                else
-                {
-                    bobArray[i].VertSpeed += gravity;
-                }
-
-                bobArray[i].Y += bobArray[i].VertSpeed;
-                Canvas.SetTop(bobArray[i].Body, bobArray[i].Y);
-
-
+                bobArray[i].MakeBobBounce(fieldArray, startY, margins, gravity);
                 for (int j = 0; j < numField; j++)
                 {
                     if (CheckCollisionDifferent(fieldArray[j].Box, bobArray[i].Body))
-                    {
-                        if (bobArray[i].Y >= fieldArray[j].Y + fieldArray[j].Box.Height - 5 &&
-                            bobArray[i].X + bobArray[i].Body.Width >= fieldArray[j].X &&
-                            bobArray[i].X <= fieldArray[j].X + fieldArray[j].Box.Width) // Under field
-                        {
-                            bobArray[i].Y += 2;
-                            bobArray[i].VertSpeed = -bobArray[i].VertSpeed;
-
-                        }
-                        else if (bobArray[i].Y + bobArray[i].Body.Height <= fieldArray[j].Y + 10 &&
-                            bobArray[i].X + bobArray[i].Body.Width >= fieldArray[j].X + 10 &&
-                            bobArray[i].X <= fieldArray[j].X + fieldArray[j].Box.Width - 10) // Over field 
-                        {
-                            bobArray[i].VertSpeed = - gravity - bobArray[i].VertSpeed * 0.99;
-
-                        }
-                        else if (bobArray[i].X + bobArray[i].Body.Width >= fieldArray[j].X &&
-                            bobArray[i].X + bobArray[i].Body.Width <= fieldArray[j].X + 5 &&
-                            bobArray[i].Y <= fieldArray[j].Y + fieldArray[j].Box.Height &&
-                            bobArray[i].Y + bobArray[i].Body.Height >= fieldArray[j].Y) //venstre side
-                        {
-                            bobArray[i].MoveLeft();
-                        }
-                        else if (bobArray[i].X <= fieldArray[j].X + fieldArray[j].Box.Width &&
-                            bobArray[i].X >= fieldArray[j].X + fieldArray[j].Box.Width - 5 &&
-                            bobArray[i].Y <= fieldArray[j].Y + fieldArray[j].Box.Height &&
-                            bobArray[i].Y + bobArray[i].Body.Height >= fieldArray[j].Y) //Højre side
-                        {
-                            bobArray[i].MoveRight();
-                        }
-                        else if (bobArray[i].Y > fieldArray[j].Y + fieldArray[j].Box.Height &&
-                          bobArray[i].X > fieldArray[j].X + fieldArray[j].Box.Width) //SØ hjørne
-                        {
-                            bobArray[i].MoveRight();
-                            bobArray[i].Y += 2;
-                            bobArray[i].VertSpeed = -bobArray[i].VertSpeed;
-                        }
-                        else if (bobArray[i].Y > fieldArray[j].Y + fieldArray[j].Box.Height &&
-                          bobArray[i].X + bobArray[i].Body.Width < fieldArray[j].X) // SV Hjørne 
-                        {
-                            bobArray[i].MoveLeft();
-                            bobArray[i].Y += 2;
-                        }
-                        else if (bobArray[i].Y + bobArray[i].Body.Height < fieldArray[j].Y &&
-                          bobArray[i].X + bobArray[i].Body.Width < fieldArray[j].X) // NV hjørne 
-                        {
-                            bobArray[i].MoveLeft();
-                        }
-                        else if (bobArray[i].Y + bobArray[i].Body.Height < fieldArray[j].Y &&
-                              bobArray[i].X > fieldArray[j].X + fieldArray[j].Box.Width) //NE
-                        {
-                            bobArray[i].MoveRight();
-                        }
-
-                    }
+                        bobArray[i].CheckCollision(fieldArray[j], gravity);
                 }
             }
-
-            
         }
         private double RandomDoubleFromRange(double min, double max)
         {
@@ -583,21 +534,18 @@ namespace CWPF
         {
             Rect r1 = new Rect(Canvas.GetLeft(s1), Canvas.GetTop(s1), s1.Width, s1.Height);
             Rect r2 = new Rect(Canvas.GetLeft(s2), Canvas.GetTop(s2), s2.Width, s2.Height);
-
             return r1.IntersectsWith(r2);
         }
         public bool CheckCollisionRecktangle(Rectangle s1, Rectangle s2)
         {
             Rect r1 = new Rect(Canvas.GetLeft(s1), Canvas.GetTop(s1), s1.Width, s1.Height);
             Rect r2 = new Rect(Canvas.GetLeft(s2), Canvas.GetTop(s2), s2.Width, s2.Height);
-
             return r1.IntersectsWith(r2);
         }
         public bool CheckCollisionDifferent(Rectangle s1, Ellipse s2)
         {
             Rect r1 = new Rect(Canvas.GetLeft(s1), Canvas.GetTop(s1), s1.Width, s1.Height);
             Rect r2 = new Rect(Canvas.GetLeft(s2), Canvas.GetTop(s2), s2.Width, s2.Height);
-
             return r1.IntersectsWith(r2);
         }
 
@@ -684,6 +632,4 @@ namespace CWPF
         
 
     }
-
-    
 }

@@ -63,7 +63,7 @@ namespace CWPF
             shape.Name = "coin";
             shape.Height = radius*2;
             shape.Width = radius*2;
-            shape.StrokeThickness = 1;
+            shape.StrokeThickness = 0.5;
             shape.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#d9a760"));
             shape.Stroke = new SolidColorBrush(Colors.Black);
             jonaCanvas.Children.Add(shape);
@@ -79,12 +79,17 @@ namespace CWPF
             coinText.HorizontalAlignment = HorizontalAlignment.Left;
             coinText.VerticalAlignment = VerticalAlignment.Top;
             x_ = x + radius - coinText.FontSize / 4;
-            y_ = y + radius - coinText.FontSize / 2 - shape.StrokeThickness;
+            y_ = y + radius - coinText.FontSize / 2 - shape.StrokeThickness*2;
             coinText.Text = point.ToString();
             Canvas.SetTop(coinText, y_);
             Canvas.SetLeft(coinText, x_);
             jonaCanvas.Children.Add(coinText);
         }
         #endregion
+
+        public void CheckCollision()
+        {
+            
+        }
     }
 }
