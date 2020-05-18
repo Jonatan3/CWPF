@@ -34,6 +34,7 @@ namespace CWPF
         private BouncingBob[] bobArray;
         private PowerUp PU;
         private Random rand = new Random();
+        private int MaxHighscoreListEntryCount = 5;
 
         #region Constructures
         public GameWindow(bool? hardMode)
