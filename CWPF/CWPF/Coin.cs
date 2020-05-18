@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Net.Security;
-using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using System.Windows.Threading;
 
 namespace CWPF
 {
@@ -20,7 +15,20 @@ namespace CWPF
         protected int point;
         protected TextBlock coinText;
         protected Random rand = new Random();
-
+        
+        #region Constructor 
+        public Coin(Ellipse shape, Canvas jonaCanvas, double y, double x, double radius, int point)
+        {
+            this.shape = shape;
+            this.jonaCanvas = jonaCanvas;
+            this.y = y;
+            this.x = x;
+            this.radius = radius;
+            this.point = point;
+            IniShape();
+            IniCoinText();
+        }
+        #endregion
         #region Properties
         public virtual Ellipse Shape {
             get { return shape; }
@@ -42,19 +50,6 @@ namespace CWPF
         {
             get { return coinText; }
             set { this.coinText.Text = value.ToString(); }
-        }
-        #endregion
-        #region Constructor 
-        public Coin(Ellipse shape, Canvas jonaCanvas, double y, double x, double radius, int point)
-        {
-            this.shape = shape;
-            this.jonaCanvas = jonaCanvas;
-            this.y = y;
-            this.x = x;
-            this.radius = radius;
-            this.point = point;
-            IniShape();
-            IniCoinText();
         }
         #endregion
         #region Private methods
@@ -86,10 +81,5 @@ namespace CWPF
             jonaCanvas.Children.Add(coinText);
         }
         #endregion
-
-        public void CheckCollision()
-        {
-            
-        }
     }
 }

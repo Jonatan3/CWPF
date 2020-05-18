@@ -80,6 +80,7 @@
     <Compile Include="GameWindow.xaml.cs">
       <DependentUpon>GameWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GameWindowTimers.cs" />
     <Compile Include="Highscore.cs" />
     <Compile Include="IJumpingJona.cs" />
     <Compile Include="JumpingJona.cs" />

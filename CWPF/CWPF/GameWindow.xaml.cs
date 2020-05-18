@@ -4,7 +4,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using System.Windows.Threading;
 using System.IO;
 using System.Xml.Serialization;
 using System.Collections.ObjectModel;
@@ -18,12 +17,10 @@ namespace CWPF
     /// </summary>
     public partial class GameWindow : Window
     {
-        DispatcherTimer miliSecTimer = new DispatcherTimer();
-        DispatcherTimer tenSecTimer = new DispatcherTimer();
         private JumpingJona jumpingJona;
         private bool power1 = false, power3 = false, power4 = false, PowerExist = false;
-        private int time = 60 * 60, realScore = 0, numField = 15, numCoin = 25, numBob = 5, margins = 22;
-        private TextBlock scoreText, clockText, powerText = new TextBlock();
+        private int realScore = 0, numField = 15, numCoin = 25, numBob = 5, margins = 22;
+        private TextBlock scoreText, powerText = new TextBlock();
         private double ranY, ranX, startY, out_, coinRadius = 12.5, grassTop, gravity = 0.1;
         private Coin[] coinArray;
         private Field[] fieldArray;
@@ -59,11 +56,9 @@ namespace CWPF
             
             bdrHighscoreList.Visibility = Visibility.Collapsed;
             bdrEndOfGame.Visibility = Visibility.Collapsed;
-            
-
         }
         #endregion
-        #region Private Methods
+        #region Initiaters
         private void IniScoreCounter()
         {
             scoreText = new TextBlock();
@@ -230,6 +225,8 @@ namespace CWPF
                 bobArray[i].MakeBobBounce(fieldArray, startY, margins, gravity);
             }
         }
+        #endregion
+        #region Private Methods
         private void MoveJumpingJona(object sender, EventArgs e)
         {
             if (Keyboard.IsKeyDown(Key.Left) || Keyboard.IsKeyDown(Key.A))
@@ -265,204 +262,6 @@ namespace CWPF
                     power4 = false;
                 }
             }
-        }
-        private void UpdateScreen(object sender, EventArgs e)
-        {
-            jumpingJona.MoveJumpingJona(grassTop, gravity, margins);
-            for (int i = 0; i < numField; i++)
-            {
-                if (CheckCollisionDifferent(fieldArray[i].Box, jumpingJona.Body))
-                    jumpingJona.CheckCollision(fieldArray[i], gravity);
-            }
-            if (PowerExist)
-            {
-                if (CheckCollisionDifferent(PU.Body, jumpingJona.Body))
-                {
-                    jonaCanvas.Children.Remove(powerText);
-
-                    if (PU.Power == 1)
-                    {
-                        power1 = true;
-                        power3 = false;
-                        power4 = false;
-                        BottomText(powerText, 880, jonaCanvas.ActualHeight - 200, "Pres ENTER to use Double Jump");
-                    }
-                    else if (PU.Power == 2)
-                    {
-                        time += 5 * 60;
-                        power1 = false;
-                        power3 = false;
-                        power4 = false;
-                        BottomText(powerText, 900, jonaCanvas.ActualHeight - 200, "You just got +5 secs!");
-                    }
-                    else if (PU.Power == 3)
-                    {
-                        power1 = false;
-                        power3 = true;
-                        power4 = false;
-                        BottomText(powerText, 880, jonaCanvas.ActualHeight - 200, "Pres ENTER to use Size Down");
-                    }
-                    else if (PU.Power == 4)
-                    {
-                        power1 = false;
-                        power3 = false;
-                        power4 = true;
-                        BottomText(powerText, 880, jonaCanvas.ActualHeight - 200, "Pres ENTER to use Size Up");
-                    }
-                    jonaCanvas.Children.Remove(PU.Body);
-                    PowerExist = false;
-                }
-            }
-        }
-        #endregion
-        #region Clock Timers
-
-        private void StartTimers()
-        {
-            IniClock();
-            IniScoreCounter();
-            miliSecTimer.Interval = TimeSpan.FromMilliseconds(1);
-            miliSecTimer.Tick += new EventHandler(MoveJumpingJona);
-            miliSecTimer.Tick += UpdateScreen;
-            miliSecTimer.Tick += StartClock;
-            miliSecTimer.Tick += UpdateScore;
-            miliSecTimer.Tick += MakeBobBounce;
-            miliSecTimer.Start();
-
-            tenSecTimer.Interval = TimeSpan.FromSeconds(10);
-            tenSecTimer.Tick += InputPowerUp;
-            tenSecTimer.Start();
-            clockText.Text = TimeSpan.FromSeconds(0).ToString();
-            scoreText.Text = realScore.ToString();
-        }
-        #endregion
-        private void StartClock(object sender, EventArgs e)
-        {
-          
-            if(time != 0)
-            {
-            time = --time;
-            clockText.Text = TimeSpan.FromSeconds(time).ToString();
-            }
-            else
-            {
-                EndGame();
-                miliSecTimer.Stop();
-            }
-                    
-            
-        }
-        private void UpdateScore(object sender, EventArgs e)
-        {
-            for (int i = 0; i < numCoin; i++)
-            {
-                if (CheckCollisionEllipses(jumpingJona.Body, coinArray[i].Shape))
-                {
-                    realScore += coinArray[i].Point;
-                    jonaCanvas.Children.Remove(coinArray[i].Shape);
-                    jonaCanvas.Children.Remove(coinArray[i].CoinText);
-
-                    coinArray[i] = MakeCoin();
-
-                    for (int j = 0; j < numCoin; j++)
-                    {
-                        if (j == i)
-                        {
-                        }
-                        else if (CheckCollisionEllipses(coinArray[j].Shape, coinArray[i].Shape))
-                        {
-                            jonaCanvas.Children.Remove(coinArray[i].Shape);
-                            jonaCanvas.Children.Remove(coinArray[i].CoinText);
-                            coinArray[i] = MakeCoin();
-                            j--;
-                        }
-                        else
-                        {
-                            for (int k = 0; k < numField; k++)
-                            {
-                                if (CheckCollisionDifferent(fieldArray[k].Box, coinArray[i].Shape))
-                                {
-                                    jonaCanvas.Children.Remove(coinArray[i].Shape);
-                                    jonaCanvas.Children.Remove(coinArray[i].CoinText);
-                                    coinArray[i] = MakeCoin();
-                                    j--;
-                                    break;
-                                }
-                                else if (CheckCollisionEllipses(coinArray[i].Shape, jumpingJona.Body))
-                                {
-                                    jonaCanvas.Children.Remove(coinArray[i].Shape);
-                                    jonaCanvas.Children.Remove(coinArray[i].CoinText);
-                                    coinArray[i] = MakeCoin();
-                                    j--;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }  
-            }
-            for (int i = 0; i < numBob; i++)
-            {
-                if (CheckCollisionEllipses(jumpingJona.Body, bobArray[i].Body))
-                {
-                    realScore -= 10;
-                    jonaCanvas.Children.Remove(bobArray[i].Body);
-                    bobArray[i] = MakeBob();
-
-                    for (int j = 0; j < numBob; j++)
-                    { 
-                        if (j == i)
-                        {
-                        }
-                        else if (CheckCollisionEllipses(bobArray[j].Body, bobArray[i].Body))
-                        {
-                            jonaCanvas.Children.Remove(bobArray[i].Body);
-                            bobArray[i] = MakeBob();
-                            j--;
-                        }
-                        else
-                        {
-                            for (int k = 0; k < numCoin; k++)
-                            {
-                                if (CheckCollisionEllipses(coinArray[k].Shape, bobArray[i].Body))
-                                {
-                                    jonaCanvas.Children.Remove(bobArray[i].Body);
-                                    bobArray[i] = MakeBob();
-                                    j--;
-                                    k = numCoin;
-                                }
-                                else
-                                {
-                                    for (int l = 0; l < numField; l++)
-                                    {
-                                        if (CheckCollisionDifferent(fieldArray[l].Box, bobArray[i].Body))
-                                        {
-                                            jonaCanvas.Children.Remove(bobArray[i].Body);
-                                            bobArray[i] = MakeBob();
-                                            j--;
-                                            l = numField;
-                                            k = numCoin; 
-                                            //Hej hej 
-
-                                        }
-                                        else if (CheckCollisionEllipses(bobArray[i].Body, jumpingJona.Body))
-                                        {
-                                            jonaCanvas.Children.Remove(bobArray[i].Body);
-                                            bobArray[i] = MakeBob();
-                                            l = numField;
-                                            k = numCoin;
-                                            j--;
-
-                                        }
-
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            scoreText.Text = realScore.ToString();
         }
         private void InputPowerUp(object sender, EventArgs e)
         {
@@ -510,18 +309,6 @@ namespace CWPF
             Canvas.SetLeft(text, x);
             jonaCanvas.Children.Add(text);
         } 
-        private void MakeBobBounce(object sender, EventArgs e)
-        {
-            for (int i = 0; i < numBob; i++)
-            {
-                bobArray[i].MakeBobBounce(fieldArray, startY, margins, gravity);
-                for (int j = 0; j < numField; j++)
-                {
-                    if (CheckCollisionDifferent(fieldArray[j].Box, bobArray[i].Body))
-                        bobArray[i].CheckCollision(fieldArray[j], gravity);
-                }
-            }
-        }
         private double RandomDoubleFromRange(double min, double max)
         {
             out_ = rand.NextDouble() * (max - min) + min;
@@ -546,44 +333,42 @@ namespace CWPF
             return r1.IntersectsWith(r2);
         }
 
-
         public ObservableCollection<Highscore> HighscoreList
         {
-        get;
-        set;
+            get;
+            set;
         } = new ObservableCollection<Highscore>();
-       
+        #endregion
+        #region Highscore
         private void ButtonAddHighscore_Click(object sender, RoutedEventArgs e)
         {
-        int newIndex = 0;
+            int newIndex = 0;
     
-        if((this.HighscoreList.Count > 0) && (realScore < this.HighscoreList.Max(x => x.Score)))
-        {
-        Highscore justAbove = this.HighscoreList.OrderByDescending(x => x.Score).First(x => x.Score >= realScore);
-        if(justAbove != null)
-        newIndex = this.HighscoreList.IndexOf(justAbove) + 1;
-        }
-    // Create and insert the neew highscore
-        this.HighscoreList.Insert(newIndex, new Highscore()
-        {
-        PlayerName = txtPlayerName.Text,
-        Score = realScore
-        });
-    // Make sure that the amount of higscores does not exceed the maximum (5)
-        while(this.HighscoreList.Count > MaxHighscoreListEntryCount)
-        this.HighscoreList.RemoveAt(MaxHighscoreListEntryCount);
+            if((this.HighscoreList.Count > 0) && (realScore < this.HighscoreList.Max(x => x.Score)))
+            {
+                Highscore justAbove = this.HighscoreList.OrderByDescending(x => x.Score).First(x => x.Score >= realScore);
+                if(justAbove != null)
+                    newIndex = this.HighscoreList.IndexOf(justAbove) + 1;
+            }
+            // Create and insert the neew highscore
+            this.HighscoreList.Insert(newIndex, new Highscore()
+            {
+                PlayerName = txtPlayerName.Text,
+                Score = realScore
+            });
+            // Make sure that the amount of higscores does not exceed the maximum (5)
+            while(this.HighscoreList.Count > MaxHighscoreListEntryCount)
+                this.HighscoreList.RemoveAt(MaxHighscoreListEntryCount);
 
-        SaveHighscoreList();
+            SaveHighscoreList();
     
-        bdrNewHighscore.Visibility = Visibility.Collapsed;
-        bdrHighscoreList.Visibility = Visibility.Visible;
+            bdrNewHighscore.Visibility = Visibility.Collapsed;
+            bdrHighscoreList.Visibility = Visibility.Visible;
         }
 
-       
-
-    private void LoadHighscoreList()
+        private void LoadHighscoreList()
         {
-        if(File.Exists("highscorelist.xml"))
+            if(File.Exists("highscorelist.xml"))
             {
                 XmlSerializer serializer = new XmlSerializer(typeof(List<Highscore>));
                 using(Stream reader = new FileStream("highscorelist.xml", FileMode.Open))
@@ -596,37 +381,34 @@ namespace CWPF
              }
         }
 
-    private void SaveHighscoreList()
-    {
-        XmlSerializer serializer = new XmlSerializer(typeof(ObservableCollection<Highscore>));
-        using(Stream writer = new FileStream("highscorelist.xml", FileMode.Create))
+        private void SaveHighscoreList()
         {
-        serializer.Serialize(writer, this.HighscoreList);
+            XmlSerializer serializer = new XmlSerializer(typeof(ObservableCollection<Highscore>));
+            using(Stream writer = new FileStream("highscorelist.xml", FileMode.Create))
+            {
+                serializer.Serialize(writer, this.HighscoreList);
+            }
         }
-    }
 
-    private void EndGame()
-    {
-    bool isNewHighscore = false;
-    if(realScore > 0)
-    {
-    int lowestHighscore = (this.HighscoreList.Count > 0 ? this.HighscoreList.Min(x => x.Score) : 0);
-    if((realScore > lowestHighscore) || (this.HighscoreList.Count < MaxHighscoreListEntryCount))
+        private void EndGame()
         {
-        bdrNewHighscore.Visibility = Visibility.Visible;
-        txtPlayerName.Focus();
-        isNewHighscore = true;
+            bool isNewHighscore = false;
+            if(realScore > 0)
+            {
+                int lowestHighscore = (this.HighscoreList.Count > 0 ? this.HighscoreList.Min(x => x.Score) : 0);
+                if((realScore > lowestHighscore) || (this.HighscoreList.Count < MaxHighscoreListEntryCount))
+                {
+                    bdrNewHighscore.Visibility = Visibility.Visible;
+                    txtPlayerName.Focus();
+                    isNewHighscore = true;
+                }
+            }
+            if(!isNewHighscore)
+            {
+                tbFinalScore.Text = realScore.ToString();
+                bdrEndOfGame.Visibility = Visibility.Visible;
+            }
         }
-    }
-    if(!isNewHighscore)
-        {
-        tbFinalScore.Text = realScore.ToString();
-        bdrEndOfGame.Visibility = Visibility.Visible;
-        }
-    
-    }
-    
-        
-
+        #endregion
     }
 }
