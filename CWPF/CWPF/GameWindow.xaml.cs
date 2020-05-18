@@ -23,7 +23,7 @@ namespace CWPF
         private JumpingJona jumpingJona;
         private double gravity = 0.1;
         private int margins = 22;
-        private bool power1 = false, power2 = false, power3 = false, power4 = false, PowerExist = false;
+        private bool power1 = false, power3 = false, power4 = false, PowerExist = false;
         private int time = 60 * 60, realScore = 0, power, ranPoint, fieldSize, numField = 30, numCoin = 40, numBob = 10;
         private TextBlock scoreText, clockText;
         private double ranY, ranX, startY, out_, coinRadius = 12.5, grassTop;
@@ -223,7 +223,7 @@ namespace CWPF
                 jumpingJona.Jump();
                 jumpingJona.CanJump = false;
             }
-            if (Keyboard.IsKeyDown(Key.Enter) && ((jumpingJona.CanJump && power1) || power2 || power3 ||power4))
+            if (Keyboard.IsKeyDown(Key.Enter) && ((jumpingJona.CanJump && power1) || power3 ||power4))
             {
                 if (power1)
                 {
@@ -231,10 +231,6 @@ namespace CWPF
                     jumpingJona.Y += jumpingJona.VertSpeed;
                     jumpingJona.CanJump = false;
                     power1 = false;
-                }
-                else if (power2)
-                {
-                    power2 = false;
                 }
                 else if (power3)
                 {
@@ -346,7 +342,6 @@ namespace CWPF
                     if(PU.Power == 1)
                     {
                         power1 = true;
-                        power2 = false;
                         power3 = false;
                         power4 = false;
 
@@ -355,7 +350,6 @@ namespace CWPF
                     {
                         time += 10 * 60;
                         power1 = false;
-                        power2 = false;
                         power3 = false;
                         power4 = false;
 
@@ -363,7 +357,6 @@ namespace CWPF
                     else if (PU.Power == 3)
                     {
                         power1 = false;
-                        power2 = false;
                         power3 = true;
                         power4 = false;
 
@@ -371,7 +364,6 @@ namespace CWPF
                     else if (PU.Power == 4)
                     {
                         power1 = false;
-                        power2 = false;
                         power3 = false;
                         power4 = true;
 
