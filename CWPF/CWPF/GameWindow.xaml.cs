@@ -352,7 +352,7 @@ namespace CWPF
                     }
                     else if (PU.Power == 2)
                     {
-                        time += 10 * 60;
+                        time += 5 * 60;
                         power1 = false;
                         power2 = false;
                         power3 = false;
