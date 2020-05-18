@@ -128,6 +128,7 @@ namespace CWPF
                         {
                             jonaCanvas.Children.Remove(coinArray[i].Shape);
                             jonaCanvas.Children.Remove(coinArray[i].CoinText);
+                            j = i;
                             i--;
                         }
                         else
@@ -138,6 +139,8 @@ namespace CWPF
                                 {
                                     jonaCanvas.Children.Remove(coinArray[i].Shape);
                                     jonaCanvas.Children.Remove(coinArray[i].CoinText);
+                                    j = i;
+                                    k = numField;
                                     i--;
                                 }
                             }
