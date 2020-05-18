@@ -65,7 +65,7 @@ namespace CWPF
                 body.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#8856d0"));
             } else if (power == 2)
             {
-                body.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#1dbe13"));
+                body.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#dd55e2"));
             }
             else if (power == 3)
             {

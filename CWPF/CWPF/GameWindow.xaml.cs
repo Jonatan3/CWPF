@@ -19,13 +19,17 @@ namespace CWPF
     {
         DispatcherTimer miliSecTimer = new DispatcherTimer();
         DispatcherTimer tenSecTimer = new DispatcherTimer();
-        Rectangle grass = new Rectangle();
+        private Rectangle grass = new Rectangle();
+        private BouncingBob bob;
+        private Coin coin;
+        private PowerUp p1, p2, p3, p4;
         private JumpingJona jumpingJona;
         private double gravity = 0.1;
         private int margins = 22;
         private bool power1 = false, power3 = false, power4 = false, PowerExist = false;
-        private int time = 60 * 60, realScore = 0, power, ranPoint, fieldSize, numField = 30, numCoin = 40, numBob = 10;
-        private TextBlock scoreText, clockText;
+        private int time = 60 * 60, realScore = 0, power, ranPoint, fieldSize, numField = 15, numCoin = 25, numBob = 5;
+        private TextBlock scoreText, clockText, p1_t = new TextBlock(), p2_t = new TextBlock(), p3_t = new TextBlock(), 
+            p4_t = new TextBlock(), coin_t = new TextBlock(), bob_t = new TextBlock(), powerText = new TextBlock();
         private double ranY, ranX, startY, out_, coinRadius = 12.5, grassTop;
         private Coin[] coinArray;
         private Field[] fieldArray;
@@ -94,6 +98,20 @@ namespace CWPF
             jonaCanvas.Children.Add(grass);
             grassTop = jonaCanvas.ActualHeight - grass.Height - margins;
             Canvas.SetTop(grass, grassTop);
+
+            bob = new BouncingBob(new Ellipse(), jonaCanvas, jonaCanvas.ActualHeight - 100 , 400);
+            BottomText(bob_t, 440, jonaCanvas.ActualHeight - 97, "-10 points");
+               coin = new Coin(new Ellipse(), jonaCanvas, jonaCanvas.ActualHeight - 100, 600, coinRadius, 3);
+            BottomText(coin_t, 640, jonaCanvas.ActualHeight - 97, "+ points");
+            p1 = new PowerUp(new Rectangle(), jonaCanvas, jonaCanvas.ActualHeight - 97.5, 800, 1);
+            BottomText(p1_t, 835, jonaCanvas.ActualHeight - 97, "Double Jump");
+            p2 = new PowerUp(new Rectangle(), jonaCanvas, jonaCanvas.ActualHeight - 97.5, 1000, 2);
+            BottomText(p2_t, 1035, jonaCanvas.ActualHeight - 97, "+5 secs");
+            p3 = new PowerUp(new Rectangle(), jonaCanvas, jonaCanvas.ActualHeight - 97.5, 1200, 3);
+            BottomText(p3_t, 1235, jonaCanvas.ActualHeight - 97,"Size down");
+            p4 = new PowerUp(new Rectangle(), jonaCanvas, jonaCanvas.ActualHeight - 97.5, 1400, 4);
+            BottomText(p4_t, 1435, jonaCanvas.ActualHeight - 97, "Size up");
+
         }
         private void IniCoins()
         {
@@ -225,6 +243,8 @@ namespace CWPF
             }
             if (Keyboard.IsKeyDown(Key.Enter) && ((jumpingJona.CanJump && power1) || power3 ||power4))
             {
+                jonaCanvas.Children.Remove(powerText);
+
                 if (power1)
                 {
                     jumpingJona.VertSpeed = -10;
@@ -242,6 +262,7 @@ namespace CWPF
                 {
                     jumpingJona.Body.Height += 10;
                     jumpingJona.Body.Width += 10;
+                    jumpingJona.Y -= 10;
                     power4 = false;
                 }
             }
@@ -339,37 +360,40 @@ namespace CWPF
             {
                 if (CheckCollisionDifferent(PU.Body, jumpingJona.Body))
                 {
-                    if(PU.Power == 1)
+                    jonaCanvas.Children.Remove(powerText);
+
+                    if (PU.Power == 1)
                     {
                         power1 = true;
                         power3 = false;
                         power4 = false;
-
+                        BottomText(powerText, 880, jonaCanvas.ActualHeight - 200, "Pres ENTER to use Double Jump");
                     }
                     else if (PU.Power == 2)
                     {
-                        time += 10 * 60;
+                        time += 5 * 60;
                         power1 = false;
                         power3 = false;
                         power4 = false;
-
+                        BottomText(powerText, 900, jonaCanvas.ActualHeight - 200, "You just got +5 secs!");
                     }
                     else if (PU.Power == 3)
                     {
                         power1 = false;
                         power3 = true;
                         power4 = false;
-
+                        BottomText(powerText, 880, jonaCanvas.ActualHeight - 200, "Pres ENTER to use Size Down");
                     }
                     else if (PU.Power == 4)
                     {
                         power1 = false;
                         power3 = false;
                         power4 = true;
-
+                        BottomText(powerText, 880, jonaCanvas.ActualHeight - 200, "Pres ENTER to use Size Up");
                     }
                     jonaCanvas.Children.Remove(PU.Body);
                     PowerExist = false;
+                    
                 }
             }
         }
@@ -536,7 +560,7 @@ namespace CWPF
         }
         private Field MakeField()
         {
-            fieldSize = rand.Next(1, 4);
+            fieldSize = rand.Next(3, 6);
             ranX = RandomDoubleFromRange(margins, jonaCanvas.ActualWidth - margins - 30*fieldSize);
             ranY = RandomDoubleFromRange(startY - jumpingJona.Body.Height, margins + jumpingJona.Body.Height);
             
@@ -556,6 +580,14 @@ namespace CWPF
 
             return new PowerUp(new Rectangle(), jonaCanvas, grassTop - 20 , ranX, power);
         }
+        private void BottomText(TextBlock text, double x, double y, string str)
+        {
+            text.FontSize = 14;
+            text.Text = str;
+            Canvas.SetTop(text, y);
+            Canvas.SetLeft(text, x);
+            jonaCanvas.Children.Add(text);
+        } 
         private void MakeBobBounce()
         {
             for (int i = 0; i < numBob; i++)
