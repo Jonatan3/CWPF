@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
@@ -16,6 +17,7 @@ namespace CWPF
         {
             InitializeComponent();
             IniMainMenu();
+           
         }
         #endregion
 
@@ -44,6 +46,18 @@ namespace CWPF
             collaboratorsButton.Margin = new Thickness(0, 80, 0, 0);
             buttonGrid.Children.Add(collaboratorsButton);
 
+            // Highscore Button
+            Button highscoreButton = new Button();
+            highscoreButton.Height = 50;
+            highscoreButton.Width = 100;
+            highscoreButton.Content = "Highscore";
+            highscoreButton.Background = new SolidColorBrush(Colors.Black);
+            highscoreButton.Foreground = new SolidColorBrush(Colors.White);
+            highscoreButton.Click += new RoutedEventHandler(HighscoreButton_Click);
+            highscoreButton.Margin = new Thickness(0, 220, 0, 0);
+            buttonGrid.Children.Add(highscoreButton);
+
+
             // Hardmode checkbox
             hardModeBox = new CheckBox();
             hardModeBox.IsChecked = false;
@@ -52,6 +66,13 @@ namespace CWPF
             hardModeBox.Height = 15;
             hardModeBox.Margin = new Thickness(30, 0, 0, 0);
             buttonGrid.Children.Add(hardModeBox);
+        }
+
+        private void HighscoreButton_Click(object sender, RoutedEventArgs e)
+        {
+            buttonGrid.Children.Clear();
+            IniHigscore();
+
         }
         #endregion
 
