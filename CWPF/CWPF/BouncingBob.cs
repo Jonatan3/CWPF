@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
@@ -50,7 +45,7 @@ namespace CWPF
 
         #endregion
         #region Private methods
-        protected void IniBody()
+        private void IniBody()
         {
             body.Name = "bouncingBob";
             body.Height = 25;
@@ -63,7 +58,7 @@ namespace CWPF
             Canvas.SetTop(body, y);
         }
         #endregion
-
+        #region Public methods
         public void MoveRight()
         {
             x += 4;
@@ -150,5 +145,6 @@ namespace CWPF
                 this.MoveRight();
             }
         }
+        #endregion
     }
 }

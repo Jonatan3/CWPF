@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using System.Windows.Shapes;
 using System.Windows.Media;
 
@@ -17,6 +12,17 @@ namespace CWPF
         protected double x, y;
         protected int fieldSize = 30, size;
 
+        #region Constructors
+        public Field(Rectangle box, Canvas jonaCanvas, double y, double x, int size)
+        {
+            this.box = box;
+            this.jonaCanvas = jonaCanvas;
+            this.y = y;
+            this.x = x;
+            this.size = size;
+            IniShape();
+        }
+        #endregion
         #region Properties
         public virtual Rectangle Box
         {
@@ -34,17 +40,7 @@ namespace CWPF
             set { this.Y = value; }
         }
         #endregion
-
-        public Field(Rectangle box, Canvas jonaCanvas, double y, double x, int size)
-        {
-            this.box = box;
-            this.jonaCanvas = jonaCanvas;
-            this.y = y;
-            this.x = x;
-            this.size = size;
-            IniShape();
-        }
-
+        #region Protected methods
         protected void IniShape()
         {
             box.Height = fieldSize;
@@ -56,6 +52,7 @@ namespace CWPF
             Canvas.SetLeft(box, x);
             Canvas.SetTop(box, y);
         }
+        #endregion
     }
 }
 

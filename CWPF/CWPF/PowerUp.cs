@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using System.Windows.Shapes;
 using System.Windows.Media;
 
@@ -16,6 +11,17 @@ namespace CWPF
         protected double x, y;
         protected int power;
 
+        #region Constructures
+        public PowerUp(Rectangle body, Canvas jonaCanvas, double y, double x, int power)
+        {
+            this.body = body;
+            this.jonaCanvas = jonaCanvas;
+            this.y = y;
+            this.x = x;
+            this.power = power;
+            IniShape();
+        }
+        #endregion
         #region Properties
         public virtual Rectangle Body
         {
@@ -39,17 +45,7 @@ namespace CWPF
         }
 
         #endregion
-
-        public PowerUp(Rectangle body, Canvas jonaCanvas, double y, double x, int power)
-        {
-            this.body = body;
-            this.jonaCanvas = jonaCanvas;
-            this.y = y;
-            this.x = x;
-            this.power = power;
-            IniShape();
-        }
-
+        #region Protected method
         protected void IniShape()
         {
             body.Height = 20;
@@ -76,5 +72,6 @@ namespace CWPF
                 body.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFFFFF"));
             }
         }
+        #endregion
     }
 }

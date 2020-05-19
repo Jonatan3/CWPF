@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
@@ -11,6 +6,7 @@ namespace CWPF
 {
     public partial class MainWindow : Window
     {
+        #region Private methods
         private void IniCollab()
         {
             // Textblock
@@ -40,5 +36,6 @@ namespace CWPF
             buttonGrid.Children.Clear();
             IniMainMenu();
         }
+        #endregion
     }
 }
