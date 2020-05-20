@@ -76,7 +76,7 @@ namespace CWPF
                         power1 = true;
                         power3 = false;
                         power4 = false;
-                        BottomText(powerText, 880, jonaCanvas.ActualHeight - 200, "Pres ENTER to use Double Jump");
+                        BottomText(powerText, jonaCanvas.ActualWidth / 2 -50, jonaCanvas.ActualHeight - 200, "Pres ENTER to use Double Jump");
                     }
                     else if (PU.Power == 2)
                     {
@@ -84,21 +84,21 @@ namespace CWPF
                         power1 = false;
                         power3 = false;
                         power4 = false;
-                        BottomText(powerText, 900, jonaCanvas.ActualHeight - 200, "You just got +5 secs!");
+                        BottomText(powerText, jonaCanvas.ActualWidth / 2 -40, jonaCanvas.ActualHeight - 200, "You just got +5 secs!");
                     }
                     else if (PU.Power == 3)
                     {
                         power1 = false;
                         power3 = true;
                         power4 = false;
-                        BottomText(powerText, 880, jonaCanvas.ActualHeight - 200, "Pres ENTER to use Size Down");
+                        BottomText(powerText, jonaCanvas.ActualWidth / 2 - 50 / 2, jonaCanvas.ActualHeight - 200, "Pres ENTER to use Size Down");
                     }
                     else if (PU.Power == 4)
                     {
                         power1 = false;
                         power3 = false;
                         power4 = true;
-                        BottomText(powerText, 880, jonaCanvas.ActualHeight - 200, "Pres ENTER to use Size Up");
+                        BottomText(powerText, jonaCanvas.ActualWidth / 2 -50, jonaCanvas.ActualHeight - 200, "Pres ENTER to use Size Up");
                     }
                     jonaCanvas.Children.Remove(PU.Body);
                     PowerExist = false;

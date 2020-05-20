@@ -48,6 +48,7 @@ namespace CWPF
                 jumpingJona = new JumpingJonaFastState(new Ellipse(), jonaCanvas, startY);
             else
                 jumpingJona = new JumpingJonaSlowState(new Ellipse(), jonaCanvas, startY);
+
             StartTimers();
             IniBackground();
             IniFields();
@@ -96,18 +97,18 @@ namespace CWPF
             grassTop = jonaCanvas.ActualHeight - grass.Height - margins;
             Canvas.SetTop(grass, grassTop);
 
-            bob = new BouncingBob(new Ellipse(), jonaCanvas, jonaCanvas.ActualHeight - 100 , 400);
-            BottomText(bob_t, 440, jonaCanvas.ActualHeight - 97, "-10 points");
-            coin = new Coin(new Ellipse(), jonaCanvas, jonaCanvas.ActualHeight - 100, 600, coinRadius, 3);
-            BottomText(coin_t, 640, jonaCanvas.ActualHeight - 97, "+ points");
-            p1 = new PowerUp(new Rectangle(), jonaCanvas, jonaCanvas.ActualHeight - 97.5, 800, 1);
-            BottomText(p1_t, 835, jonaCanvas.ActualHeight - 97, "Double Jump");
-            p2 = new PowerUp(new Rectangle(), jonaCanvas, jonaCanvas.ActualHeight - 97.5, 1000, 2);
-            BottomText(p2_t, 1035, jonaCanvas.ActualHeight - 97, "+5 secs");
-            p3 = new PowerUp(new Rectangle(), jonaCanvas, jonaCanvas.ActualHeight - 97.5, 1200, 3);
-            BottomText(p3_t, 1235, jonaCanvas.ActualHeight - 97,"Size down");
-            p4 = new PowerUp(new Rectangle(), jonaCanvas, jonaCanvas.ActualHeight - 97.5, 1400, 4);
-            BottomText(p4_t, 1435, jonaCanvas.ActualHeight - 97, "Size up");
+            bob = new BouncingBob(new Ellipse(), jonaCanvas, jonaCanvas.ActualHeight - 100 , jonaCanvas.ActualWidth / 2 - 550);
+            BottomText(bob_t, jonaCanvas.ActualWidth / 2 - 550 + 40, jonaCanvas.ActualHeight - 97, "-10 points");
+            coin = new Coin(new Ellipse(), jonaCanvas, jonaCanvas.ActualHeight - 100, jonaCanvas.ActualWidth / 2 - 350, coinRadius, 3);
+            BottomText(coin_t, jonaCanvas.ActualWidth / 2 - 350 + 40, jonaCanvas.ActualHeight - 97, "+ points");
+            p1 = new PowerUp(new Rectangle(), jonaCanvas, jonaCanvas.ActualHeight - 97.5, jonaCanvas.ActualWidth / 2 - 150, 1);
+            BottomText(p1_t, jonaCanvas.ActualWidth / 2 - 150 +35, jonaCanvas.ActualHeight - 97, "Double Jump");
+            p2 = new PowerUp(new Rectangle(), jonaCanvas, jonaCanvas.ActualHeight - 97.5, jonaCanvas.ActualWidth / 2 +50 , 2);
+            BottomText(p2_t, jonaCanvas.ActualWidth / 2 + 50 + 35, jonaCanvas.ActualHeight - 97, "+5 secs");
+            p3 = new PowerUp(new Rectangle(), jonaCanvas, jonaCanvas.ActualHeight - 97.5, jonaCanvas.ActualWidth / 2 + 250, 3);
+            BottomText(p3_t, jonaCanvas.ActualWidth / 2 + 250 + 35, jonaCanvas.ActualHeight - 97,"Size down");
+            p4 = new PowerUp(new Rectangle(), jonaCanvas, jonaCanvas.ActualHeight - 97.5, jonaCanvas.ActualWidth / 2 + 450, 4);
+            BottomText(p4_t, jonaCanvas.ActualWidth / 2 + 450 +35, jonaCanvas.ActualHeight - 97, "Size up");
         }
         private void IniCoins()
         {
@@ -282,12 +283,12 @@ namespace CWPF
         private Coin MakeCoin()
         {
             ranX = RandomDoubleFromRange(margins, jonaCanvas.ActualWidth - coinRadius * 2 - margins);
-            ranY = RandomDoubleFromRange(startY, coinRadius * 2 + margins);
+            ranY = RandomDoubleFromRange(grassTop - coinRadius* 2, coinRadius * 2 + margins);
 
             int ranPoint;
-            if (ranY <= startY && ranY > startY * 2.0 / 3.0) { ranPoint = 1; }
-            else if (startY * 2.0 / 3.0 >= ranY && ranY > startY * 1.0 / 3.0) { ranPoint = 2; }
-            else if (startY * 1.0 / 3.0 >= ranY) { ranPoint = 3; }
+            if (ranY <= grassTop && ranY > grassTop * 2.0 / 3.0) { ranPoint = 1; }
+            else if (grassTop * 2.0 / 3.0 >= ranY && ranY > grassTop * 1.0 / 3.0) { ranPoint = 2; }
+            else if (grassTop * 1.0 / 3.0 >= ranY) { ranPoint = 3; }
             else { ranPoint = 0; }
             return new Coin(new Ellipse(), jonaCanvas, ranY, ranX, coinRadius, ranPoint);
         }
@@ -295,13 +296,13 @@ namespace CWPF
         {
             int fieldSize = rand.Next(3, 6);
             ranX = RandomDoubleFromRange(margins, jonaCanvas.ActualWidth - margins - 30*fieldSize);
-            ranY = RandomDoubleFromRange(startY - jumpingJona.Body.Height, margins + jumpingJona.Body.Height);
+            ranY = RandomDoubleFromRange(grassTop - jumpingJona.Body.Height- 40, margins + jumpingJona.Body.Height);
             return new Field(new Rectangle(), jonaCanvas, ranY, ranX, fieldSize);
         }
         private BouncingBob MakeBob()
         {
             ranX = RandomDoubleFromRange(margins, jonaCanvas.ActualWidth - margins - 25);
-            ranY = RandomDoubleFromRange(startY - 50, margins + 25);
+            ranY = RandomDoubleFromRange(grassTop - 50, margins + 25);
             return new BouncingBob(new Ellipse(), jonaCanvas, ranY, ranX);
         }
         private PowerUp MakePowerUp()
