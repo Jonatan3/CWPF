@@ -75,7 +75,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="BouncingBob.cs" />
-    <Compile Include="MainWindowHighscore.cs" />
     <Compile Include="Coin.cs" />
     <Compile Include="Field.cs" />
     <Compile Include="GameWindow.xaml.cs">
@@ -112,6 +111,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="ClassDiagram.cd" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

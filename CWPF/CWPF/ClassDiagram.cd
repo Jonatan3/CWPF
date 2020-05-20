@@ -1,0 +1,246 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="CWPF.App" Collapsed="true">
+    <Position X="16.75" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>App.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CWPF.BouncingBob">
+    <Position X="11.25" Y="7" Width="1.5" />
+    <Members>
+      <Field Name="body" Hidden="true" />
+      <Property Name="Body" Hidden="true" />
+      <Method Name="CheckCollision" Hidden="true" />
+      <Method Name="IniBody" Hidden="true" />
+      <Field Name="jonaCanvas" Hidden="true" />
+      <Method Name="MoveLeft" Hidden="true" />
+      <Method Name="MoveRight" Hidden="true" />
+      <Field Name="vertSpeed" Hidden="true" />
+      <Property Name="VertSpeed" Hidden="true" />
+      <Field Name="x" Hidden="true" />
+      <Property Name="X" Hidden="true" />
+      <Field Name="y" Hidden="true" />
+      <Property Name="Y" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAACAAAAAAAAAAAABAAAAIQAAAACIQEBgAAAAYAA=</HashCode>
+      <FileName>BouncingBob.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CWPF.Coin">
+    <Position X="16.5" Y="7" Width="1.5" />
+    <Members>
+      <Field Name="coinText" Hidden="true" />
+      <Property Name="CoinText" Hidden="true" />
+      <Method Name="IniCoinText" Hidden="true" />
+      <Field Name="jonaCanvas" Hidden="true" />
+      <Field Name="point" Hidden="true" />
+      <Property Name="Point" Hidden="true" />
+      <Field Name="radius" Hidden="true" />
+      <Field Name="rand" Hidden="true" />
+      <Field Name="shape" Hidden="true" />
+      <Property Name="Shape" Hidden="true" />
+      <Field Name="x" Hidden="true" />
+      <Property Name="X" Hidden="true" />
+      <Field Name="x_" Hidden="true" />
+      <Field Name="y" Hidden="true" />
+      <Property Name="Y" Hidden="true" />
+      <Field Name="y_" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAMAICACAAAgAAABAAAAAYgAAAAAAAAAEBgAAAAZAA=</HashCode>
+      <FileName>Coin.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CWPF.Field">
+    <Position X="14.75" Y="7" Width="1.5" />
+    <Members>
+      <Field Name="box" Hidden="true" />
+      <Property Name="Box" Hidden="true" />
+      <Field Name="fieldSize" Hidden="true" />
+      <Field Name="jonaCanvas" Hidden="true" />
+      <Field Name="size" Hidden="true" />
+      <Field Name="x" Hidden="true" />
+      <Property Name="X" Hidden="true" />
+      <Field Name="y" Hidden="true" />
+      <Property Name="Y" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAYAAAgAgAAIAAAAAAEBgAAAAYAA=</HashCode>
+      <FileName>Field.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CWPF.GameWindow" BaseTypeListCollapsed="true">
+    <Position X="13.5" Y="4" Width="1.75" />
+    <Members>
+      <Field Name="bobArray" Hidden="true" />
+      <Method Name="BottomText" Hidden="true" />
+      <Method Name="ButtonAddHighscore_Click" Hidden="true" />
+      <Method Name="CheckCollisionDifferent" Hidden="true" />
+      <Method Name="CheckCollisionEllipses" Hidden="true" />
+      <Method Name="CheckCollisionRecktangle" Hidden="true" />
+      <Field Name="clockText" Hidden="true" />
+      <Field Name="coinArray" Hidden="true" />
+      <Field Name="coinRadius" Hidden="true" />
+      <Method Name="EndGame" Hidden="true" />
+      <Field Name="fieldArray" Hidden="true" />
+      <Field Name="grassTop" Hidden="true" />
+      <Field Name="gravity" Hidden="true" />
+      <Property Name="HighscoreList" Hidden="true" />
+      <Method Name="IniBackground" Hidden="true" />
+      <Method Name="InputPowerUp" Hidden="true" />
+      <Field Name="jumpingJona" Hidden="true" />
+      <Method Name="LoadHighscoreList" Hidden="true" />
+      <Method Name="MakeBob" Hidden="true" />
+      <Method Name="MakeBobBounce" Hidden="true" />
+      <Method Name="MakeCoin" Hidden="true" />
+      <Method Name="MakeField" Hidden="true" />
+      <Method Name="MakePowerUp" Hidden="true" />
+      <Field Name="margins" Hidden="true" />
+      <Field Name="MaxHighscoreListEntryCount" Hidden="true" />
+      <Field Name="miliSecTimer" Hidden="true" />
+      <Method Name="MoveJumpingJona" Hidden="true" />
+      <Field Name="numBob" Hidden="true" />
+      <Field Name="numCoin" Hidden="true" />
+      <Field Name="numField" Hidden="true" />
+      <Field Name="out_" Hidden="true" />
+      <Field Name="power1" Hidden="true" />
+      <Field Name="power3" Hidden="true" />
+      <Field Name="power4" Hidden="true" />
+      <Field Name="PowerExist" Hidden="true" />
+      <Field Name="powerText" Hidden="true" />
+      <Field Name="PU" Hidden="true" />
+      <Field Name="rand" Hidden="true" />
+      <Method Name="RandomDoubleFromRange" Hidden="true" />
+      <Field Name="ranX" Hidden="true" />
+      <Field Name="ranY" Hidden="true" />
+      <Field Name="realScore" Hidden="true" />
+      <Method Name="SaveHighscoreList" Hidden="true" />
+      <Field Name="scoreText" Hidden="true" />
+      <Method Name="StartClock" Hidden="true" />
+      <Method Name="StartTimers" Hidden="true" />
+      <Field Name="startY" Hidden="true" />
+      <Field Name="tenSecTimer" Hidden="true" />
+      <Field Name="time" Hidden="true" />
+      <Method Name="UpdateScore" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>QAQRAIiICBAMAQkgARkgAASoxMkgghKI0AAQAAAQJQY=</HashCode>
+      <FileName>GameWindow.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="CWPF.Highscore">
+    <Position X="18.25" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Highscore.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CWPF.JumpingJona">
+    <Position X="8" Y="4.25" Width="1.5" />
+    <Members>
+      <Field Name="body" Hidden="true" />
+      <Property Name="Body" Hidden="true" />
+      <Field Name="canJump" Hidden="true" />
+      <Property Name="CanJump" Hidden="true" />
+      <Field Name="jonaCanvas" Hidden="true" />
+      <Field Name="startY" Hidden="true" />
+      <Property Name="StartY" Hidden="true" />
+      <Field Name="vertSpeed" Hidden="true" />
+      <Property Name="VertSpeed" Hidden="true" />
+      <Field Name="x" Hidden="true" />
+      <Property Name="X" Hidden="true" />
+      <Field Name="y" Hidden="true" />
+      <Property Name="Y" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAiAAAAAgAAADAAAAI0AAAACIQEBgAAAAYAA=</HashCode>
+      <FileName>JumpingJona.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="CWPF.JumpingJonaFastState">
+    <Position X="6.25" Y="7.25" Width="1.5" />
+    <Members>
+      <Property Name="Body" Hidden="true" />
+      <Property Name="CanJump" Hidden="true" />
+      <Property Name="StartY" Hidden="true" />
+      <Property Name="VertSpeed" Hidden="true" />
+      <Property Name="X" Hidden="true" />
+      <Property Name="Y" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAiAAAAAAAAADAAAAAQAAAAAIQAAAAAAAYAA=</HashCode>
+      <FileName>JumpingJonaFastState.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="CWPF.JumpingJonaSlowState">
+    <Position X="9.25" Y="7.25" Width="1.5" />
+    <Members>
+      <Property Name="Body" Hidden="true" />
+      <Property Name="CanJump" Hidden="true" />
+      <Property Name="StartY" Hidden="true" />
+      <Property Name="VertSpeed" Hidden="true" />
+      <Property Name="X" Hidden="true" />
+      <Property Name="Y" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAiAAAAAAAAADAAAAAQAAAAAIQAAAAAAAYAA=</HashCode>
+      <FileName>JumpingJonaSlowState.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="CWPF.MainWindow" BaseTypeListCollapsed="true">
+    <Position X="10.75" Y="2.75" Width="1.5" />
+    <Members>
+      <Field Name="hardModeBox" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQAgAAAAAAAAAFAAAACAIAAAAgAAAACAAAAA=</HashCode>
+      <FileName>MainWindow.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="CWPF.PowerUp">
+    <Position X="13" Y="7" Width="1.5" />
+    <Members>
+      <Field Name="body" Hidden="true" />
+      <Property Name="Body" Hidden="true" />
+      <Field Name="jonaCanvas" Hidden="true" />
+      <Field Name="power" Hidden="true" />
+      <Property Name="Power" Hidden="true" />
+      <Field Name="x" Hidden="true" />
+      <Property Name="X" Hidden="true" />
+      <Field Name="y" Hidden="true" />
+      <Property Name="Y" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAABAAAgAQEAAAABAEBgAAAAYAA=</HashCode>
+      <FileName>PowerUp.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CWPF.Properties.Resources" Collapsed="true">
+    <Position X="16.75" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAABEAAAAQAAAAAAAAAAAAAAAIA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CWPF.Properties.Settings" Collapsed="true">
+    <Position X="16.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAIAAAAAABAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="CWPF.IJumpingJona">
+    <Position X="5.75" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAIQAAAAAAAAAA=</HashCode>
+      <FileName>IJumpingJona.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

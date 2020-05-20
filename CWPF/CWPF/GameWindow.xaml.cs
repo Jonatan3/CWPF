@@ -273,6 +273,12 @@ namespace CWPF
             PU = MakePowerUp();
             PowerExist = true;
         }
+
+        private void buttonExit_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
         private Coin MakeCoin()
         {
             ranX = RandomDoubleFromRange(margins, jonaCanvas.ActualWidth - coinRadius * 2 - margins);
@@ -336,13 +342,15 @@ namespace CWPF
             return r1.IntersectsWith(r2);
         }
 
+
+        #endregion
+        #region Highscore
+
         public ObservableCollection<Highscore> HighscoreList
         {
             get;
             set;
         } = new ObservableCollection<Highscore>();
-        #endregion
-        #region Highscore
         private void ButtonAddHighscore_Click(object sender, RoutedEventArgs e)
         {
             int newIndex = 0;
@@ -367,6 +375,11 @@ namespace CWPF
     
             bdrNewHighscore.Visibility = Visibility.Collapsed;
             bdrHighscoreList.Visibility = Visibility.Visible;
+        }
+
+        private void ButtonExit_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
         }
 
         private void LoadHighscoreList()

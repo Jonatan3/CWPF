@@ -1,8 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-
+using System.Xml.Serialization;
 
 namespace CWPF
 {
@@ -46,6 +50,7 @@ namespace CWPF
             collaboratorsButton.Margin = new Thickness(0, 80, 0, 0);
             buttonGrid.Children.Add(collaboratorsButton);
 
+
             // Highscore Button
             Button highscoreButton = new Button();
             highscoreButton.Height = 50;
@@ -68,15 +73,15 @@ namespace CWPF
             buttonGrid.Children.Add(hardModeBox);
         }
 
-        private void HighscoreButton_Click(object sender, RoutedEventArgs e)
-        {
-            buttonGrid.Children.Clear();
-            IniHigscore();
-
-        }
+       
         #endregion
 
         #region Clickers
+
+        private void ButtonHide_Click(object snder, RoutedEventArgs e) 
+        {
+            bdrHighscoreList.Visibility = Visibility.Collapsed;
+        }
         private void StartButton_Click(object sender, RoutedEventArgs e)
         {
             GameWindow gameWindow = new GameWindow(hardModeBox.IsChecked);
@@ -87,6 +92,33 @@ namespace CWPF
             buttonGrid.Children.Clear();
             IniCollab();
         }
+        private void HighscoreButton_Click(object sender, RoutedEventArgs e)
+        {
+            LoadHighscoreList();
+            bdrHighscoreList.Visibility = Visibility.Visible;
+           
+        }
         #endregion
+
+        public ObservableCollection<Highscore> HighscoreList
+        {
+            get;
+            set;
+        } = new ObservableCollection<Highscore>();
+
+        private void LoadHighscoreList()
+        {
+            if (File.Exists("highscorelist.xml"))
+            {
+                XmlSerializer serializer = new XmlSerializer(typeof(List<Highscore>));
+                using (Stream reader = new FileStream("highscorelist.xml", FileMode.Open))
+                {
+                    List<Highscore> tempList = (List<Highscore>)serializer.Deserialize(reader);
+                    this.HighscoreList.Clear();
+                    foreach (var item in tempList.OrderByDescending(x => x.Score))
+                        this.HighscoreList.Add(item);
+                }
+            }
+        }
     }
 }
