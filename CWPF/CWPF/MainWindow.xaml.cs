@@ -21,11 +21,11 @@ namespace CWPF
         {
             InitializeComponent();
             IniMainMenu();
-           
         }
         #endregion
 
         #region Initialiser
+        // Initiates main menu
         private void IniMainMenu()
         {
             // Start game button
@@ -50,7 +50,6 @@ namespace CWPF
             collaboratorsButton.Margin = new Thickness(0, 80, 0, 0);
             buttonGrid.Children.Add(collaboratorsButton);
 
-
             // Highscore Button
             Button highscoreButton = new Button();
             highscoreButton.Height = 50;
@@ -62,7 +61,6 @@ namespace CWPF
             highscoreButton.Margin = new Thickness(0, 220, 0, 0);
             buttonGrid.Children.Add(highscoreButton);
 
-
             // Hardmode checkbox
             hardModeBox = new CheckBox();
             hardModeBox.IsChecked = false;
@@ -72,40 +70,42 @@ namespace CWPF
             hardModeBox.Margin = new Thickness(30, 0, 0, 0);
             buttonGrid.Children.Add(hardModeBox);
         }
-
-       
         #endregion
 
         #region Clickers
-
+        // Hide button click
         private void ButtonHide_Click(object snder, RoutedEventArgs e) 
         {
             bdrHighscoreList.Visibility = Visibility.Collapsed;
         }
+        // Start game button click
         private void StartButton_Click(object sender, RoutedEventArgs e)
         {
             GameWindow gameWindow = new GameWindow(hardModeBox.IsChecked);
             gameWindow.Show();
         }
+        // Collaborators button click
         private void CollaberatorsButton_Click(object sender, RoutedEventArgs e)
         {
             buttonGrid.Children.Clear();
             IniCollab();
         }
+        // Highscore button click
         private void HighscoreButton_Click(object sender, RoutedEventArgs e)
         {
             LoadHighscoreList();
             bdrHighscoreList.Visibility = Visibility.Visible;
-           
         }
         #endregion
 
+        #region Highscore
+        // Get and set for highscorelist
         public ObservableCollection<Highscore> HighscoreList
         {
             get;
             set;
         } = new ObservableCollection<Highscore>();
-
+        // Loads highscorelist from highscorelist.xml
         private void LoadHighscoreList()
         {
             if (File.Exists("highscorelist.xml"))
@@ -120,5 +120,6 @@ namespace CWPF
                 }
             }
         }
+        #endregion
     }
 }

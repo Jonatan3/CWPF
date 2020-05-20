@@ -12,6 +12,7 @@ namespace CWPF
         private TextBlock clockText;
 
         #region Clock Timers
+        // Initiate Dispatchtimers
         private void StartTimers()
         {
             IniClock();
@@ -31,6 +32,7 @@ namespace CWPF
             clockText.Text = TimeSpan.FromSeconds(0).ToString();
             scoreText.Text = realScore.ToString();
         }
+        // Updates clock, and checks if time has run out
         private void StartClock(object sender, EventArgs e)
         {
             if (time != 0)
@@ -45,6 +47,7 @@ namespace CWPF
                 tenSecTimer.Stop();
             }
         }
+        // Make Bobs bounch, and checks for ground collision
         private void MakeBobBounce(object sender, EventArgs e)
         {
             for (int i = 0; i < numBob; i++)
@@ -57,6 +60,7 @@ namespace CWPF
                 }
             }
         }
+        // Checks if jumpingjona has collision, and writes text for powerups
         private void UpdateScreen(object sender, EventArgs e)
         {
             jumpingJona.MoveJumpingJona(grassTop, gravity, margins);
@@ -105,6 +109,7 @@ namespace CWPF
                 }
             }
         }
+        // Calculates and updates score
         private void UpdateScore(object sender, EventArgs e)
         {
             for (int i = 0; i < numCoin; i++)

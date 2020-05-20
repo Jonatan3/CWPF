@@ -7,6 +7,7 @@ namespace CWPF
     public partial class MainWindow : Window
     {
         #region Private methods
+        // Initiates collaboration menu
         private void IniCollab()
         {
             // Textblock
@@ -31,6 +32,7 @@ namespace CWPF
             backButton.Click += new RoutedEventHandler(BackButton_Click);
             buttonGrid.Children.Add(backButton);
         }
+        // On Back button click
         private void BackButton_Click(object sender, RoutedEventArgs e)
         {
             buttonGrid.Children.Clear();

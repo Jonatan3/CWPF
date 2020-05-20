@@ -9,19 +9,20 @@ namespace CWPF
         {
         }
         #region Override methods
+        // Jona jump
         public override void Jump()
         {
             vertSpeed = -5;
             y += vertSpeed;
             Canvas.SetTop(body, y);
         }
-
+        // Jona move right
         public override void MoveRight()
         {
             x += 4;
             Canvas.SetLeft(body, x);
         }
-
+        // Jona move left
         public override void MoveLeft()
         {
             x -= 4;
