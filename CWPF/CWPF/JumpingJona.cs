@@ -52,6 +52,7 @@ namespace CWPF
         }
         #endregion
         #region Private methods
+        // Initiates body of jumpingjona
         protected void IniBody()
         {
             body.Name = "jumpingJona";
@@ -67,18 +68,19 @@ namespace CWPF
         }
         #endregion
         #region Public Methods
+        // Jona jump
         public virtual void Jump()
         {
         }
-
+        // Jona move right
         public virtual void MoveRight()
         {
         }
-
+        // Jona move left
         public virtual void MoveLeft()
         {
         }
-
+        // Moves jumpingjona on the canvas
         public void MoveJumpingJona(double grassTop, double gravity, int margins)
         {
             if (this.Y + this.Body.Height + this.VertSpeed >= grassTop) // Græs
@@ -108,7 +110,7 @@ namespace CWPF
                 this.MoveLeft();
             }
         }
-
+        // Checks collsion with fields, and handels the collision
         public void CheckCollision(Field currField, double gravity)
         {
             if (this.Y >= currField.Y + currField.Box.Height - 5 &&
